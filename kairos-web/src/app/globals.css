@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #080a0f;
+  --foreground: #e8eaf0;
+  --muted: #0d1017;
+  --muted-foreground: #4b5563;
+  --border: #13161f;
+  --accent: #1a56ff;
+  --accent-foreground: #ffffff;
+  --radius: 0.25rem;
+}
+
+* { border-color: var(--border); }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(26,86,255,0.25); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #13161f; border-radius: 2px; }
