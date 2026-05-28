@@ -15,7 +15,7 @@ async def create_workflow(body: WorkflowCreate, db: AsyncSession = Depends(get_d
         agent_id=body.agent_id,
         name=body.name,
         input=body.input,
-        metadata=body.metadata,
+        extra=body.metadata,
         status=WorkflowStatus.RUNNING,
     )
     db.add(wf)

@@ -61,7 +61,7 @@ class Agent(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text)
     agent_type = Column(String(100))
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
     created_at = Column(DateTime(timezone=True), default=now_utc, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -83,7 +83,7 @@ class Workflow(Base):
     duration_ms = Column(Integer)
     total_tokens = Column(Integer, default=0)
     total_cost_usd = Column(Float, default=0.0)
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     agent = relationship("Agent", back_populates="workflows")
     traces = relationship("Trace", back_populates="workflow", cascade="all, delete-orphan")
@@ -111,7 +111,7 @@ class Trace(Base):
     cost_usd = Column(Float, default=0.0)
     started_at = Column(DateTime(timezone=True), default=now_utc, nullable=False)
     completed_at = Column(DateTime(timezone=True))
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     workflow = relationship("Workflow", back_populates="traces")
     events = relationship("Event", back_populates="trace", cascade="all, delete-orphan")
@@ -135,7 +135,7 @@ class Event(Base):
     error = Column(Text)
     latency_ms = Column(Integer)
     timestamp = Column(DateTime(timezone=True), default=now_utc, nullable=False)
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     trace = relationship("Trace", back_populates="events")
 
@@ -161,7 +161,7 @@ class ToolCall(Base):
     retry_count = Column(Integer, default=0)
     called_at = Column(DateTime(timezone=True), default=now_utc, nullable=False)
     completed_at = Column(DateTime(timezone=True))
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     trace = relationship("Trace", back_populates="tool_calls")
 
@@ -186,7 +186,7 @@ class Approval(Base):
     resolved_by = Column(String(255))
     resolution_note = Column(Text)
     expires_at = Column(DateTime(timezone=True))
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     __table_args__ = (
         Index("ix_approvals_workflow_id", "workflow_id"),
@@ -204,7 +204,7 @@ class MemoryState(Base):
     value = Column(JSON)
     operation = Column(String(50), nullable=False)  # read, write, delete
     timestamp = Column(DateTime(timezone=True), default=now_utc, nullable=False)
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     __table_args__ = (
         Index("ix_memory_state_workflow_id", "workflow_id"),
@@ -225,7 +225,7 @@ class ReplaySession(Base):
     created_at = Column(DateTime(timezone=True), default=now_utc, nullable=False)
     started_at = Column(DateTime(timezone=True))
     completed_at = Column(DateTime(timezone=True))
-    metadata = Column(JSON, default=dict)
+    extra = Column("metadata", JSON, default=dict)
 
     __table_args__ = (
         Index("ix_replay_sessions_workflow_id", "workflow_id"),

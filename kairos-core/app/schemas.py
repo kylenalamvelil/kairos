@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from app.models import EventType, ApprovalStatus, WorkflowStatus
 
 
@@ -14,15 +14,13 @@ class AgentCreate(BaseModel):
 
 
 class AgentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     name: str
     description: Optional[str]
     agent_type: Optional[str]
-    metadata: dict
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ── Workflows ────────────────────────────────────────────────────────────────
@@ -44,6 +42,7 @@ class WorkflowUpdate(BaseModel):
 
 
 class WorkflowOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     agent_id: Optional[str]
     name: Optional[str]
@@ -56,10 +55,7 @@ class WorkflowOut(BaseModel):
     duration_ms: Optional[int]
     total_tokens: int
     total_cost_usd: float
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Traces ───────────────────────────────────────────────────────────────────
@@ -83,6 +79,7 @@ class TraceUpdate(BaseModel):
 
 
 class TraceOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     workflow_id: str
     parent_trace_id: Optional[str]
@@ -96,10 +93,7 @@ class TraceOut(BaseModel):
     cost_usd: float
     started_at: datetime
     completed_at: Optional[datetime]
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Events ───────────────────────────────────────────────────────────────────
@@ -116,6 +110,7 @@ class EventCreate(BaseModel):
 
 
 class EventOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     trace_id: str
     workflow_id: str
@@ -125,10 +120,7 @@ class EventOut(BaseModel):
     error: Optional[str]
     latency_ms: Optional[int]
     timestamp: datetime
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Tool Calls ───────────────────────────────────────────────────────────────
@@ -150,6 +142,7 @@ class ToolCallUpdate(BaseModel):
 
 
 class ToolCallOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     trace_id: str
     tool_name: str
@@ -161,10 +154,7 @@ class ToolCallOut(BaseModel):
     retry_count: int
     called_at: datetime
     completed_at: Optional[datetime]
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Approvals ────────────────────────────────────────────────────────────────
@@ -186,6 +176,7 @@ class ApprovalResolve(BaseModel):
 
 
 class ApprovalOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     workflow_id: str
     trace_id: Optional[str]
@@ -198,10 +189,7 @@ class ApprovalOut(BaseModel):
     resolved_by: Optional[str]
     resolution_note: Optional[str]
     expires_at: Optional[datetime]
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Memory State ─────────────────────────────────────────────────────────────
@@ -216,6 +204,7 @@ class MemoryStateCreate(BaseModel):
 
 
 class MemoryStateOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     workflow_id: str
     agent_id: Optional[str]
@@ -223,10 +212,7 @@ class MemoryStateOut(BaseModel):
     value: Optional[Any]
     operation: str
     timestamp: datetime
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Replay Sessions ──────────────────────────────────────────────────────────
@@ -239,6 +225,7 @@ class ReplaySessionCreate(BaseModel):
 
 
 class ReplaySessionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     workflow_id: str
     name: Optional[str]
@@ -249,10 +236,7 @@ class ReplaySessionOut(BaseModel):
     created_at: datetime
     started_at: Optional[datetime]
     completed_at: Optional[datetime]
-    metadata: dict
-
-    class Config:
-        from_attributes = True
+    metadata: dict = Field(default_factory=dict, validation_alias='extra')
 
 
 # ── Ingest (single-call trace submission) ────────────────────────────────────

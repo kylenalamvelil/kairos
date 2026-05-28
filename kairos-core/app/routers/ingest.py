@@ -30,7 +30,7 @@ async def ingest(body: IngestRequest, db: AsyncSession = Depends(get_db)):
             name=body.workflow_name,
             input=None,
             status=body.status,
-            metadata=body.metadata,
+            extra=body.metadata,
         )
         if body.status in (WorkflowStatus.COMPLETED, WorkflowStatus.FAILED):
             wf.completed_at = now
@@ -59,7 +59,7 @@ async def ingest(body: IngestRequest, db: AsyncSession = Depends(get_db)):
         latency_ms=body.latency_ms,
         cost_usd=body.cost_usd,
         completed_at=now if body.output else None,
-        metadata=body.metadata,
+        extra=body.metadata,
     )
     db.add(trace)
     await db.flush()
@@ -74,7 +74,7 @@ async def ingest(body: IngestRequest, db: AsyncSession = Depends(get_db)):
             sequence=i,
             payload=ev.get("payload", ev),
             latency_ms=ev.get("latency_ms"),
-            metadata=ev.get("metadata", {}),
+            extra=ev.get("metadata", {}),
         )
         db.add(event)
         events_created += 1
@@ -91,7 +91,7 @@ async def ingest(body: IngestRequest, db: AsyncSession = Depends(get_db)):
             status=tc.get("status", "completed"),
             latency_ms=tc.get("latency_ms"),
             retry_count=tc.get("retry_count", 0),
-            metadata=tc.get("metadata", {}),
+            extra=tc.get("metadata", {}),
         )
         db.add(tool_call)
         tool_calls_created += 1

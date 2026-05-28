@@ -21,7 +21,7 @@ async def create_replay_session(body: ReplaySessionCreate, db: AsyncSession = De
         workflow_id=body.workflow_id,
         name=body.name or f"Replay {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}",
         notes=body.notes,
-        metadata=body.metadata,
+        extra=body.metadata,
         status="created",
         total_events=total_events,
     )
