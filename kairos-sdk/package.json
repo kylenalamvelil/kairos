@@ -15,8 +15,22 @@
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch"
   },
-  "dependencies": {},
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "kairos",
+    "ai",
+    "agents",
+    "tracing",
+    "observability",
+    "replay",
+    "autonomous"
+  ],
+  "license": "MIT",
   "devDependencies": {
+    "@types/node": "^25.9.1",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   }
