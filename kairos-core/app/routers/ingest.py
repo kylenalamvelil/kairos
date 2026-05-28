@@ -67,10 +67,14 @@ async def ingest(body: IngestRequest, db: AsyncSession = Depends(get_db)):
     # Events
     events_created = 0
     for i, ev in enumerate(body.events):
+        try:
+            ev_type = EventType(ev.get("type", "custom"))
+        except ValueError:
+            ev_type = EventType.CUSTOM
         event = Event(
             trace_id=trace.id,
             workflow_id=wf.id,
-            event_type=ev.get("type", EventType.CUSTOM),
+            event_type=ev_type,
             sequence=i,
             payload=ev.get("payload", ev),
             latency_ms=ev.get("latency_ms"),

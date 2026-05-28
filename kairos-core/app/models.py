@@ -37,6 +37,8 @@ class EventType(str, PyEnum):
     EXECUTION_COMPLETED = "execution_completed"
     AGENT_STARTED = "agent_started"
     AGENT_STOPPED = "agent_stopped"
+    DECISION_MADE = "decision_made"
+    POLICY_CHECKED = "policy_checked"
     CUSTOM = "custom"
 
 
