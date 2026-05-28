@@ -35,6 +35,7 @@ app.include_router(replay.router, prefix="/v1")
 
 
 @app.get("/health")
+@app.get("/v1/health")
 async def health():
     return {"status": "operational", "service": "kairos-core"}
 
