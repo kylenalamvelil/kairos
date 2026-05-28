@@ -1,6 +1,6 @@
 // ── API Client for kairos-core ───────────────────────────────────────────────
 
-const BASE = process.env.NEXT_PUBLIC_KAIROS_API_URL ?? 'http://localhost:8000'
+const BASE = process.env.NEXT_PUBLIC_KAIROS_API_URL ?? 'https://kairos-production-64c5.up.railway.app'
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}/v1${path}`, { cache: 'no-store' })
