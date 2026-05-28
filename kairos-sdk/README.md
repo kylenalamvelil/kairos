@@ -1,4 +1,4 @@
-# @kairos/sdk
+# kairos-sdk
 
 The flight recorder for autonomous operations.
 
@@ -7,13 +7,13 @@ Instrument any AI agent in 3 lines. Every prompt, decision, tool call, and failu
 ## Install
 
 ```bash
-npm install @kairos/sdk
+npm install kairos-sdk
 ```
 
 ## Quickstart
 
 ```typescript
-import { createKairos } from '@kairos/sdk'
+import { createKairos } from 'kairos-sdk'
 
 const kairos = createKairos()
 
