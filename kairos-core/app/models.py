@@ -131,7 +131,7 @@ class Event(Base):
     id = Column(UUID(as_uuid=False), primary_key=True, default=new_uuid)
     trace_id = Column(UUID(as_uuid=False), ForeignKey("traces.id", ondelete="CASCADE"), nullable=False)
     workflow_id = Column(UUID(as_uuid=False), nullable=False)
-    event_type = Column(Enum(EventType), nullable=False)
+    event_type = Column(String(100), nullable=False)
     sequence = Column(Integer, nullable=False)
     payload = Column(JSON, default=dict)
     error = Column(Text)
