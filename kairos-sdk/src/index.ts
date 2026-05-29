@@ -155,7 +155,9 @@ export class KairosExecution {
     this.payload.status = 'completed'
     this.payload.latencyMs = Date.now() - this.startedAt
     this.event('execution_completed', { durationMs: this.payload.latencyMs })
-    return this.client._flush(this.payload)
+    const result = await this.client._flush(this.payload)
+    console.log(`[kairos] Trace recorded → https://withkairos.dev/app`)
+    return result
   }
 
   async fail(error: string): Promise<IngestResponse> {
@@ -163,7 +165,9 @@ export class KairosExecution {
     this.payload.error = error
     this.payload.latencyMs = Date.now() - this.startedAt
     this.event('execution_failed', { error, durationMs: this.payload.latencyMs })
-    return this.client._flush(this.payload)
+    const result = await this.client._flush(this.payload)
+    console.log(`[kairos] Trace recorded (failed) → https://withkairos.dev/app`)
+    return result
   }
 }
 

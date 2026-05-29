@@ -325,6 +325,13 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
           <h2 className="text-xs font-semibold text-[#6b7280] uppercase tracking-wider">
             Event Timeline — {filteredEvents.length}{filterType ? ` (filtered)` : ` events`}
           </h2>
+          <button
+            onClick={() => { navigator.clipboard.writeText(window.location.href); }}
+            className="text-[10px] font-mono text-[#4b5563] hover:text-white border border-[#13161f] hover:border-[#1e2232] px-2 py-0.5 rounded transition-colors"
+            title="Copy replay link"
+          >
+            Share replay ↗
+          </button>
           <div className="flex items-center gap-2">
             <div
               className="h-1.5 rounded-full bg-[#13161f] overflow-hidden"

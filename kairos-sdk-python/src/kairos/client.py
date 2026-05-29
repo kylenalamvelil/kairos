@@ -101,10 +101,12 @@ class KairosExecution:
             "total_tokens": self._prompt_tokens + self._completion_tokens,
             "total_cost_usd": self._cost_usd,
         })
+        print(f"[kairos] Trace recorded → https://withkairos.dev/app")
         return self
 
     def fail(self, error: str) -> "KairosExecution":
         self._emit("execution_failed", {"error": error})
+        print(f"[kairos] Trace recorded (failed) → https://withkairos.dev/app")
         return self
 
 
