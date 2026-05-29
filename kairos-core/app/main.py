@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
-from app.routers import workflows, traces, events, approvals, replay, ingest
+from app.routers import workflows, traces, events, approvals, replay, ingest, feedback
 
 
 @asynccontextmanager
@@ -32,6 +32,7 @@ app.include_router(traces.router, prefix="/v1")
 app.include_router(events.router, prefix="/v1")
 app.include_router(approvals.router, prefix="/v1")
 app.include_router(replay.router, prefix="/v1")
+app.include_router(feedback.router, prefix="/v1")
 
 
 @app.get("/health")
