@@ -22,7 +22,7 @@ Dashboard with replay is live. Python SDK available too.
 We're early (v0.1) and genuinely want feedback from developers building agents. What would make this useful for you?
 
 https://kairos-web-lyart.vercel.app
-https://github.com/kylenalamvelil/kairos
+https://github.com/withkairos/kairos
 
 ---
 
@@ -47,7 +47,7 @@ Tweet 3:
 It's early. It's open source. We're looking for developers building agents who want to try it.
 
 Dashboard: kairos-web-lyart.vercel.app
-GitHub: github.com/kylenalamvelil/kairos
+GitHub: github.com/withkairos/kairos
 Docs: kairos-web-lyart.vercel.app/docs
 
 What are you building?
@@ -82,7 +82,7 @@ Replay UI, LangChain integration, and self-hosting all work.
 
 Looking for feedback — what would make this useful for the agents you're building?
 
-GitHub: https://github.com/kylenalamvelil/kairos
+GitHub: https://github.com/withkairos/kairos
 
 ---
 
@@ -97,7 +97,7 @@ Works with LangChain out of the box (callback handler included). Two lines to ad
 
 npm install kairos-sdk / pip install kairos-sdk
 
-Open source: github.com/kylenalamvelil/kairos
+Open source: github.com/withkairos/kairos
 Docs: kairos-web-lyart.vercel.app/docs
 
 Would love feedback if you try it.

@@ -90,7 +90,7 @@ export default function Docs() {
               className="block text-[10px] font-mono text-white/20 hover:text-white/40 transition-colors">
               API Reference ↗
             </a>
-            <a href="https://github.com/kylenalamvelil/kairos"
+            <a href="https://github.com/withkairos/kairos"
               target="_blank" rel="noreferrer"
               className="block text-[10px] font-mono text-white/20 hover:text-white/40 transition-colors mt-2">
               GitHub ↗
@@ -224,7 +224,7 @@ exec.complete('Q3 summary: Revenue up 18%...')
             <Code language="bash">https://kairos-production-64c5.up.railway.app/docs</Code>
             <H3>Self-hosting</H3>
             <Code language="bash">{`
-git clone https://github.com/kylenalamvelil/kairos
+git clone https://github.com/withkairos/kairos
 cd kairos/kairos-core
 pip install -r requirements.txt
 # Set DATABASE_URL env var

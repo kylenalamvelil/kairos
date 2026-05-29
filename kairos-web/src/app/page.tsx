@@ -117,7 +117,7 @@ export default function Home() {
           {[
             { label: 'Docs',   href: '/docs' },
             { label: 'SDK',    href: 'https://www.npmjs.com/package/kairos-sdk' },
-            { label: 'GitHub', href: 'https://github.com/kylenalamvelil/kairos' },
+            { label: 'GitHub', href: 'https://github.com/withkairos/kairos' },
           ].map(({ label, href }) => (
             <a key={label} href={href}
               className="text-xs text-white/25 hover:text-white/55 transition-colors tracking-widest uppercase font-mono">
@@ -496,7 +496,7 @@ export default function Home() {
               className="px-6 py-3 bg-white text-[#080a0f] text-sm font-semibold rounded hover:bg-white/90 transition-colors">
               Start tracing
             </Link>
-            <a href="https://github.com/kylenalamvelil/kairos"
+            <a href="https://github.com/withkairos/kairos"
               className="px-6 py-3 border border-white/10 text-white/35 text-sm rounded hover:border-white/20 hover:text-white/55 transition-colors font-mono">
               View on GitHub
             </a>

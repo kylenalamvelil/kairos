@@ -6,7 +6,7 @@ Requires the API to be running: docker-compose up
 import httpx
 import time
 
-BASE = "http://localhost:8000/v1"
+BASE = "https://kairos-production-64c5.up.railway.app/v1"
 
 
 def post(path, body):
