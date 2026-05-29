@@ -158,6 +158,7 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
   const [idx, setIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState<Speed>(1)
+  const hasAutoStarted = useRef(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
   const activeRowRef = useRef<HTMLDivElement>(null)
@@ -186,6 +187,16 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
   useEffect(() => {
     activeRowRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [idx])
+
+  // Auto-start replay once when events first load
+  useEffect(() => {
+    if (events.length > 0 && !hasAutoStarted.current) {
+      hasAutoStarted.current = true
+      setIdx(0)
+      const t = setTimeout(() => setPlaying(true), 600)
+      return () => clearTimeout(t)
+    }
+  }, [events.length])
 
   if (events.length === 0) {
     return <p className="text-xs text-[#4b5563] font-mono">No events to replay.</p>
@@ -262,43 +273,30 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
           </div>
         </div>
 
-        {/* Current event detail */}
-        <div className="bg-[#0d1017] border border-[#13161f] rounded-lg p-4 flex-1 overflow-hidden flex flex-col">
-          <div className="text-[10px] text-[#4b5563] uppercase tracking-wider font-mono mb-3">
-            Current Event
-          </div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
-            <span className="text-xs font-semibold font-mono" style={{ color }}>{current.event_type}</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <div>
-              <div className="text-[9px] text-[#4b5563] uppercase tracking-wider mb-0.5">Time</div>
-              <div className="text-xs font-mono text-[#6b7280]">{fmt(current.timestamp)}</div>
+        {/* Current event — dominant card */}
+        <div className="bg-[#0d1017] border rounded-lg overflow-hidden flex-1 flex flex-col"
+          style={{ borderColor: color + '40' }}>
+          {/* Event type header */}
+          <div className="px-4 py-3 border-b" style={{ borderColor: color + '25', background: color + '08' }}>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
+              <span className="text-sm font-bold font-mono" style={{ color }}>{current.event_type}</span>
             </div>
-            <div>
-              <div className="text-[9px] text-[#4b5563] uppercase tracking-wider mb-0.5">+Offset</div>
-              <div className="text-xs font-mono text-[#6b7280]">+{currentMs}ms</div>
+            <div className="flex items-center gap-3 text-[10px] font-mono text-[#4b5563]">
+              <span>#{idx + 1} of {events.length}</span>
+              <span>+{currentMs}ms</span>
+              {current.latency_ms !== null && <span>{current.latency_ms}ms latency</span>}
             </div>
-            <div>
-              <div className="text-[9px] text-[#4b5563] uppercase tracking-wider mb-0.5">Seq</div>
-              <div className="text-xs font-mono text-[#6b7280]">#{current.sequence}</div>
-            </div>
-            {current.latency_ms !== null && (
-              <div>
-                <div className="text-[9px] text-[#4b5563] uppercase tracking-wider mb-0.5">Latency</div>
-                <div className="text-xs font-mono text-[#6b7280]">{current.latency_ms}ms</div>
-              </div>
-            )}
           </div>
-          <div className="text-[9px] text-[#4b5563] uppercase tracking-wider mb-1">Payload</div>
-          <div className="flex-1 overflow-y-auto">
-            <pre className="text-[10px] text-[#9ca3af] font-mono whitespace-pre-wrap break-all">
+          {/* Payload */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <pre className="text-[11px] text-[#9ca3af] font-mono whitespace-pre-wrap break-all leading-relaxed">
               {JSON.stringify(current.payload, null, 2)}
             </pre>
           </div>
           {current.error && (
-            <div className="mt-2 px-2 py-1.5 bg-red-500/5 border border-red-500/20 rounded text-[10px] text-red-400 font-mono">
+            <div className="mx-4 mb-4 px-3 py-2 bg-red-500/5 border border-red-500/20 rounded text-[10px] text-red-400 font-mono">
               {current.error}
             </div>
           )}
@@ -351,7 +349,7 @@ export default function Dashboard() {
   const [selected, setSelected]             = useState<string | null>(null)
   const [events, setEvents]                 = useState<KairosEvent[]>([])
   const [approvals, setApprovals]           = useState<Approval[]>([])
-  const [tab, setTab]                       = useState<Tab>('timeline')
+  const [tab, setTab]                       = useState<Tab>('replay')
   const [loading, setLoading]               = useState(true)
   const [detailLoading, setDetailLoading]   = useState(false)
   const [error, setError]                   = useState<string | null>(null)
