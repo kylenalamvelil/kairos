@@ -1,7 +1,7 @@
 """
 Kairos Quickstart — Python
 
-pip install kairos-sdk
+pip install kairos-trace
 python quickstart.py
 
 Then open: https://withkairos.dev/app

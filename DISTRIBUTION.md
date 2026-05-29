@@ -21,7 +21,7 @@ Dashboard with replay is live. Python SDK available too.
 
 We're early (v0.1) and genuinely want feedback from developers building agents. What would make this useful for you?
 
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 https://github.com/withkairos/kairos
 
 ---
@@ -41,14 +41,14 @@ Kairos records every autonomous action — prompts, tool calls, decisions, failu
 Like scrubbing through a video of your agent's mind.
 
 npm install kairos-sdk
-pip install kairos-sdk
+pip install kairos-trace
 
 Tweet 3:
 It's early. It's open source. We're looking for developers building agents who want to try it.
 
-Dashboard: kairos-web-lyart.vercel.app
+Dashboard: withkairos.dev
 GitHub: github.com/withkairos/kairos
-Docs: kairos-web-lyart.vercel.app/docs
+Docs: withkairos.dev/docs
 
 What are you building?
 
@@ -95,10 +95,10 @@ When your agent does something unexpected, Kairos lets you see exactly what happ
 
 Works with LangChain out of the box (callback handler included). Two lines to add to any existing agent.
 
-npm install kairos-sdk / pip install kairos-sdk
+npm install kairos-sdk / pip install kairos-trace
 
 Open source: github.com/withkairos/kairos
-Docs: kairos-web-lyart.vercel.app/docs
+Docs: withkairos.dev/docs
 
 Would love feedback if you try it.
 
@@ -112,4 +112,4 @@ I'm working on a replay system that records every prompt, tool call, and decisio
 
 Would you be open to trying it? Takes ~5 minutes to install. Genuinely want feedback from people actually building this stuff.
 
-kairos-web-lyart.vercel.app
+withkairos.dev

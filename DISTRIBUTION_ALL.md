@@ -60,7 +60,7 @@ Kairos Trace records every autonomous action — prompts, tool calls, decisions,
 Like scrubbing through a video of your agent's run.
 
 npm install kairos-sdk
-pip install kairos-sdk
+pip install kairos-trace
 ```
 
 **Tweet 3:**
@@ -181,7 +181,7 @@ Kairos Trace records every prompt, tool call, decision, and failure during auton
 
 Works with LangChain, OpenAI Agents SDK, CrewAI, and LlamaIndex. Two lines to instrument any existing agent.
 
-npm install kairos-sdk / pip install kairos-sdk
+npm install kairos-sdk / pip install kairos-trace
 
 Open source. Dashboard live. Replay UI included.
 ```

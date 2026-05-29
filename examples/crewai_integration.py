@@ -3,7 +3,7 @@ Kairos + CrewAI Integration
 
 Records every CrewAI agent task, tool call, and decision.
 
-pip install kairos-sdk crewai
+pip install kairos-trace crewai
 """
 
 from crewai import Agent, Task, Crew, Process

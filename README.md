@@ -23,7 +23,7 @@ Kairos Trace records every prompt, tool call, decision, and failure — then let
 ```bash
 npm install kairos-sdk
 # or
-pip install kairos-sdk
+pip install kairos-trace
 ```
 
 ## Quick Start

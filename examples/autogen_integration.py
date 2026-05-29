@@ -3,7 +3,7 @@ Kairos + AutoGen Integration
 
 Records every agent message, tool call, and conversation turn in an AutoGen workflow.
 
-pip install kairos-sdk pyautogen
+pip install kairos-trace pyautogen
 """
 
 import time

@@ -4,7 +4,7 @@ Kairos + LangChain Integration
 Automatically traces any LangChain chain, agent, or tool.
 Drop-in: add KairosCallbackHandler to any existing LangChain code.
 
-pip install kairos-sdk langchain langchain-openai
+pip install kairos-trace langchain langchain-openai
 """
 
 from typing import Any, Dict, List, Optional, Union

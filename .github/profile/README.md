@@ -16,7 +16,7 @@ Record and replay every autonomous action: every prompt, tool call, decision, po
 
 ```bash
 npm install kairos-sdk
-pip install kairos-sdk
+pip install kairos-trace
 ```
 
 [Dashboard](https://withkairos.dev/app) · [Docs](https://withkairos.dev/docs) · [Quick Start](https://github.com/withkairos/kairos#quick-start)

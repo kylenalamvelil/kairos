@@ -440,7 +440,7 @@ export default function Home() {
               <div className="space-y-2">
                 {[
                   { cmd: 'npm install kairos-sdk', key: 'npm' },
-                  { cmd: 'pip install kairos-sdk',  key: 'pip' },
+                  { cmd: 'pip install kairos-trace',  key: 'pip' },
                 ].map(({ cmd, key }) => (
                   <button key={key} onClick={() => copy(cmd, key)}
                     className="flex items-center gap-2 w-full px-4 py-2.5 bg-[#080a0f] border border-white/[0.06] rounded text-[10px] font-mono text-white/25 hover:text-white/45 hover:border-white/10 transition-colors text-left">

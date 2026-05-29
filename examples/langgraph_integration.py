@@ -3,7 +3,7 @@ Kairos + LangGraph Integration
 
 Records every node execution, tool call, and state transition in a LangGraph agent.
 
-pip install kairos-sdk langgraph langchain-openai
+pip install kairos-trace langgraph langchain-openai
 """
 
 import time

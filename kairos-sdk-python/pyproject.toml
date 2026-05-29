@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "kairos-sdk"
+name = "kairos-trace"
 version = "0.1.0"
 description = "Kairos SDK — instrument autonomous systems in 3 lines"
 readme = "README.md"

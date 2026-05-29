@@ -3,7 +3,7 @@ Kairos + LlamaIndex Integration
 
 Records every LlamaIndex agent query, tool call, and response.
 
-pip install kairos-sdk llama-index
+pip install kairos-trace llama-index
 """
 
 import time

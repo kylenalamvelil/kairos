@@ -117,7 +117,7 @@ export default function Docs() {
             <H3>TypeScript / JavaScript</H3>
             <Code language="bash">npm install kairos-sdk</Code>
             <H3>Python</H3>
-            <Code language="bash">pip install kairos-sdk</Code>
+            <Code language="bash">pip install kairos-trace</Code>
           </Section>
 
           {/* QUICKSTART */}
@@ -239,7 +239,7 @@ const kairos = createKairos({ baseUrl: 'http://localhost:8000' })
           {/* PYTHON */}
           <Section id="python">
             <H2>Python SDK</H2>
-            <Code language="bash">pip install kairos-sdk</Code>
+            <Code language="bash">pip install kairos-trace</Code>
             <P>The Python SDK has zero required dependencies. It uses the standard library by default and switches to <code className="text-white/50">httpx</code> automatically if installed.</P>
             <Code language="python">{`
 from kairos import create_kairos

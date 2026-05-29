@@ -3,7 +3,7 @@ Kairos + OpenAI Agents SDK Integration
 
 Traces any OpenAI agent automatically — prompts, tool calls, decisions, failures.
 
-pip install kairos-sdk openai-agents
+pip install kairos-trace openai-agents
 """
 
 import time
