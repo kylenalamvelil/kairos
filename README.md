@@ -4,7 +4,7 @@
 
 **The operational infrastructure for autonomous systems.**
 
-[withkairos.dev](https://withkairos.dev) · [Docs](https://withkairos.dev/docs) · [npm](https://www.npmjs.com/package/kairos-sdk) · [PyPI](https://pypi.org/project/kairos-sdk)
+[withkairos.dev](https://withkairos.dev) · [Docs](https://withkairos.dev/docs) · [npm](https://www.npmjs.com/package/kairos-sdk) · [PyPI](https://pypi.org/project/kairos-trace)
 
 </div>
 
@@ -59,9 +59,11 @@ Open the [dashboard](https://withkairos.dev/app) to replay your execution.
 | Framework | Integration |
 |---|---|
 | LangChain | `examples/langchain_integration.py` |
+| LangGraph | `examples/langgraph_integration.py` |
 | OpenAI Agents SDK | `examples/openai_agents_integration.py` |
 | CrewAI | `examples/crewai_integration.py` |
 | LlamaIndex | `examples/llamaindex_integration.py` |
+| AutoGen | `examples/autogen_integration.py` |
 
 ---
 
