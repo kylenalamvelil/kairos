@@ -81,20 +81,35 @@ function ErrorBanner({ msg, onRetry }: { msg: string; onRetry: () => void }) {
 }
 
 function EmptyState() {
+  const [lang, setLang] = useState<'ts' | 'py'>('py')
   return (
     <div className="flex flex-col items-center justify-center h-full gap-6 text-center px-8 py-16">
       <div className="text-4xl opacity-20">◎</div>
       <div>
         <p className="text-sm text-[#6b7280] mb-1">No executions yet.</p>
-        <p className="text-xs text-[#4b5563]">Instrument your agent and send a trace.</p>
+        <p className="text-xs text-[#4b5563]">Instrument your agent and send a trace. <a href="/docs" className="text-[#1a56ff] hover:underline">Full docs →</a></p>
       </div>
-      <div className="bg-[#0d1017] border border-[#13161f] rounded-lg p-4 text-left w-full max-w-sm">
-        <p className="text-[10px] text-[#4b5563] font-mono mb-2">Quick start</p>
-        <div className="space-y-1 font-mono text-xs">
-          <p><span className="text-[#4b5563]">$</span> <span className="text-[#e8eaf0]">npm install kairos-sdk</span></p>
-          <p className="mt-2"><span className="text-[#4b5563]">import</span> <span className="text-[#e8eaf0]">{'{ createKairos }'}</span> <span className="text-[#4b5563]">from</span> <span className="text-[#1a56ff]">&apos;kairos-sdk&apos;</span></p>
-          <p className="mt-1"><span className="text-[#4b5563]">const</span> <span className="text-[#e8eaf0]">k</span> <span className="text-[#4b5563]">=</span> <span className="text-[#e8eaf0]">createKairos()</span></p>
-          <p><span className="text-[#4b5563]">await</span> <span className="text-[#e8eaf0]">k.execution().complete(</span><span className="text-[#1a56ff]">&apos;done&apos;</span><span className="text-[#e8eaf0]">)</span></p>
+      <div className="bg-[#0d1017] border border-[#13161f] rounded-lg overflow-hidden text-left w-full max-w-sm">
+        <div className="flex border-b border-[#13161f]">
+          {(['py', 'ts'] as const).map(l => (
+            <button key={l} onClick={() => setLang(l)}
+              className={`flex-1 text-[10px] font-mono py-2 transition-colors ${lang === l ? 'text-white bg-[#13161f]' : 'text-[#4b5563] hover:text-[#6b7280]'}`}>
+              {l === 'py' ? 'Python' : 'TypeScript'}
+            </button>
+          ))}
+        </div>
+        <div className="p-4 space-y-1 font-mono text-xs">
+          {lang === 'py' ? <>
+            <p><span className="text-[#4b5563]">$</span> <span className="text-[#e8eaf0]">pip install kairos-trace</span></p>
+            <p className="mt-2"><span className="text-[#4b5563]">from</span> <span className="text-[#e8eaf0]">kairos</span> <span className="text-[#4b5563]">import</span> <span className="text-[#1a56ff]">create_kairos</span></p>
+            <p className="mt-1"><span className="text-[#e8eaf0]">k = create_kairos()</span></p>
+            <p><span className="text-[#e8eaf0]">k.execution().complete(</span><span className="text-[#1a56ff]">&apos;done&apos;</span><span className="text-[#e8eaf0]">)</span></p>
+          </> : <>
+            <p><span className="text-[#4b5563]">$</span> <span className="text-[#e8eaf0]">npm install kairos-sdk</span></p>
+            <p className="mt-2"><span className="text-[#4b5563]">import</span> <span className="text-[#e8eaf0]">{'{ createKairos }'}</span> <span className="text-[#4b5563]">from</span> <span className="text-[#1a56ff]">&apos;kairos-sdk&apos;</span></p>
+            <p className="mt-1"><span className="text-[#e8eaf0]">const k = createKairos()</span></p>
+            <p><span className="text-[#4b5563]">await</span> <span className="text-[#e8eaf0]">k.execution().complete(</span><span className="text-[#1a56ff]">&apos;done&apos;</span><span className="text-[#e8eaf0]">)</span></p>
+          </>}
         </div>
       </div>
     </div>
