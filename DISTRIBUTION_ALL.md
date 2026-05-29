@@ -15,7 +15,7 @@ Show HN: Kairos Trace – replay and inspect every AI agent execution
 
 **URL:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 **Text (optional):**
@@ -37,7 +37,7 @@ Works with LangChain, OpenAI Agents SDK, CrewAI, and LlamaIndex out of the box.
 Open source. Early. Looking for feedback from developers building agents.
 
 GitHub: https://github.com/withkairos/kairos
-Docs: https://kairos-web-lyart.vercel.app/docs
+Docs: https://withkairos.dev/docs
 ```
 
 ---
@@ -117,7 +117,7 @@ TypeScript:
 LangChain integration included. Dashboard with replay UI is live.
 
 GitHub: https://github.com/withkairos/kairos
-Docs: https://kairos-web-lyart.vercel.app/docs
+Docs: https://withkairos.dev/docs
 
 Looking for feedback — what would make this useful for the agents you're building?
 ```
@@ -152,7 +152,7 @@ Works with LangChain out of the box (callback handler included):
 Two lines. No other changes needed.
 
 Open source: github.com/withkairos/kairos
-Docs: kairos-web-lyart.vercel.app/docs
+Docs: withkairos.dev/docs
 
 Would genuinely love feedback if you try it.
 ```
@@ -259,7 +259,7 @@ llm = ChatOpenAI(callbacks=[handler])
 
 The dashboard shows every execution with a timeline view and a replay scrubber. Click any event to see the full payload.
 
-[Open Dashboard](https://kairos-web-lyart.vercel.app/app)
+[Open Dashboard](https://withkairos.dev/app)
 
 ## Open Source
 
@@ -287,7 +287,7 @@ Kairos
 
 **Website:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 ---
@@ -321,7 +321,7 @@ Kairos Trace — operational memory for autonomous systems.
 
 **Website:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 ---
@@ -364,7 +364,7 @@ I built a replay system that records every prompt, tool call, and decision your 
 
 Would you be open to trying it? Takes 5 minutes. I'm genuinely looking for feedback from people actually building this stuff.
 
-kairos-web-lyart.vercel.app
+withkairos.dev
 ```
 
 ---

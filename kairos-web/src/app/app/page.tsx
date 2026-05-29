@@ -158,20 +158,25 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
   const [idx, setIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState<Speed>(1)
+  const [filterType, setFilterType] = useState<string | null>(null)
   const hasAutoStarted = useRef(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
   const activeRowRef = useRef<HTMLDivElement>(null)
 
-  const totalMs = events.length > 1
-    ? new Date(events[events.length - 1].timestamp).getTime() - new Date(events[0].timestamp).getTime()
+  const errorIdx = events.findIndex(e => e.error || e.event_type.includes('failed'))
+  const eventTypes = Array.from(new Set(events.map(e => e.event_type)))
+  const filteredEvents = filterType ? events.filter(e => e.event_type === filterType) : events
+
+  const totalMs = filteredEvents.length > 1
+    ? new Date(filteredEvents[filteredEvents.length - 1].timestamp).getTime() - new Date(filteredEvents[0].timestamp).getTime()
     : 0
 
   useEffect(() => {
     if (playing) {
       intervalRef.current = setInterval(() => {
         setIdx(prev => {
-          if (prev >= events.length - 1) {
+          if (prev >= filteredEvents.length - 1) {
             setPlaying(false)
             return prev
           }
@@ -182,7 +187,7 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [playing, speed, events.length])
+  }, [playing, speed, filteredEvents.length])
 
   useEffect(() => {
     activeRowRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
@@ -202,10 +207,11 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
     return <p className="text-xs text-[#4b5563] font-mono">No events to replay.</p>
   }
 
-  const current = events[idx]
+  const clampedIdx = Math.min(idx, filteredEvents.length - 1)
+  const current = filteredEvents[clampedIdx]
   const color = eventColor(current.event_type)
-  const currentMs = relativeMs(events, idx)
-  const pct = totalMs > 0 ? (currentMs / totalMs) * 100 : (idx / Math.max(events.length - 1, 1)) * 100
+  const currentMs = relativeMs(filteredEvents, clampedIdx)
+  const pct = totalMs > 0 ? (currentMs / totalMs) * 100 : (clampedIdx / Math.max(filteredEvents.length - 1, 1)) * 100
 
   return (
     <div className="flex gap-6 h-full">
@@ -235,14 +241,14 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
             <input
               type="range"
               min={0}
-              max={events.length - 1}
-              value={idx}
+              max={filteredEvents.length - 1}
+              value={clampedIdx}
               onChange={e => { setPlaying(false); setIdx(Number(e.target.value)) }}
               className="w-full accent-[#1a56ff] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] text-[#4b5563] font-mono mt-1">
               <span>+0ms</span>
-              <span>{idx + 1} / {events.length}</span>
+              <span>{clampedIdx + 1} / {filteredEvents.length}</span>
               <span>+{totalMs}ms</span>
             </div>
           </div>
@@ -263,14 +269,24 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
               onClick={() => setPlaying(p => !p)}
               className="flex-1 text-sm py-1.5 rounded font-mono transition-colors bg-[#1a56ff]/10 border border-[#1a56ff]/20 text-[#1a56ff] hover:bg-[#1a56ff]/20"
             >
-              {playing ? '⏸ Pause' : idx >= events.length - 1 ? '↺ Replay' : '▶ Play'}
+              {playing ? '⏸ Pause' : clampedIdx >= filteredEvents.length - 1 ? '↺ Replay' : '▶ Play'}
             </button>
             <button
-              onClick={() => { setPlaying(false); setIdx(i => Math.min(events.length - 1, i + 1)) }}
+              onClick={() => { setPlaying(false); setIdx(i => Math.min(filteredEvents.length - 1, i + 1)) }}
               className="text-[#4b5563] hover:text-white transition-colors font-mono text-sm px-2"
               title="Step forward"
             >⏩</button>
           </div>
+
+          {/* Jump to error */}
+          {errorIdx >= 0 && (
+            <button
+              onClick={() => { setPlaying(false); setFilterType(null); setIdx(errorIdx) }}
+              className="w-full mt-2 text-[10px] py-1.5 rounded font-mono transition-colors bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20"
+            >
+              ⚠ Jump to error
+            </button>
+          )}
         </div>
 
         {/* Current event — dominant card */}
@@ -305,9 +321,9 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
 
       {/* Right — event timeline (scrollable) */}
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="flex items-center justify-between mb-3 flex-shrink-0">
+        <div className="flex items-center justify-between mb-2 flex-shrink-0">
           <h2 className="text-xs font-semibold text-[#6b7280] uppercase tracking-wider">
-            Event Timeline — {events.length} events
+            Event Timeline — {filteredEvents.length}{filterType ? ` (filtered)` : ` events`}
           </h2>
           <div className="flex items-center gap-2">
             <div
@@ -323,13 +339,33 @@ function ReplayPanel({ events }: { events: KairosEvent[] }) {
           </div>
         </div>
 
+        {/* Event type filter chips */}
+        <div className="flex flex-wrap gap-1 mb-3 flex-shrink-0">
+          <button
+            onClick={() => { setFilterType(null); setIdx(0) }}
+            className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${!filterType ? 'bg-[#1a56ff]/20 border-[#1a56ff]/40 text-[#1a56ff]' : 'border-[#13161f] text-[#4b5563] hover:text-[#6b7280]'}`}
+          >
+            all
+          </button>
+          {eventTypes.map(t => (
+            <button
+              key={t}
+              onClick={() => { setFilterType(t === filterType ? null : t); setIdx(0) }}
+              className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${filterType === t ? 'border-current' : 'border-[#13161f] text-[#4b5563] hover:text-[#6b7280]'}`}
+              style={filterType === t ? { color: eventColor(t), borderColor: eventColor(t) + '60', background: eventColor(t) + '15' } : {}}
+            >
+              {t.replace('_', ' ')}
+            </button>
+          ))}
+        </div>
+
         <div ref={timelineRef} className="flex-1 overflow-y-auto pr-1">
-          {events.map((ev, i) => (
-            <div key={ev.id} ref={i === idx ? activeRowRef : null}>
+          {filteredEvents.map((ev, i) => (
+            <div key={ev.id} ref={i === clampedIdx ? activeRowRef : null}>
               <EventRow
                 ev={ev}
-                isLast={i === events.length - 1}
-                active={i === idx}
+                isLast={i === filteredEvents.length - 1}
+                active={i === clampedIdx}
                 onClick={() => { setPlaying(false); setIdx(i) }}
               />
             </div>

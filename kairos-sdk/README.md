@@ -27,7 +27,7 @@ exec.decision('Selected most credible source', 0.91)
 await exec.complete(output)
 ```
 
-That's it. Open [kairos-web-lyart.vercel.app/app](https://kairos-web-lyart.vercel.app/app) to see the execution.
+That's it. Open [withkairos.dev/app](https://withkairos.dev/app) to see the execution.
 
 ## API
 

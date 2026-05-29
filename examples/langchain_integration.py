@@ -136,4 +136,4 @@ if __name__ == "__main__":
     result = executor.invoke({"input": "What is the EU AI Act?"})
     print(result["output"])
     print("\nExecution recorded. Open your Kairos dashboard to replay it.")
-    print("https://kairos-web-lyart.vercel.app/app")
+    print("https://withkairos.dev/app")

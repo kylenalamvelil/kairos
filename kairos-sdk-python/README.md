@@ -32,7 +32,7 @@ exec.decision("Selected most credible source", confidence=0.91)
 exec.complete(output)
 ```
 
-Open your [Kairos dashboard](https://kairos-web-lyart.vercel.app/app) to see the execution replay.
+Open your [Kairos dashboard](https://withkairos.dev/app) to see the execution replay.
 
 ## LangChain integration
 

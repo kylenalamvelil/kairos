@@ -1,59 +1,97 @@
 """
 Kairos + OpenAI Agents SDK Integration
 
-Traces any OpenAI agent automatically.
+Traces any OpenAI agent automatically — prompts, tool calls, decisions, failures.
 
 pip install kairos-sdk openai-agents
 """
 
 import time
-from openai.agents import Agent, Runner, function_tool
+from contextlib import contextmanager
 from kairos import create_kairos
 
 
+@contextmanager
 def kairos_trace(workflow_name: str = "openai-agent"):
     """
-    Decorator that wraps an OpenAI Agents Runner to record execution to Kairos.
+    Context manager that records an OpenAI agent run to Kairos.
 
     Usage:
-        runner = Runner(agent)
-        with KairosTracer(runner, workflow_name="my-agent") as tracer:
-            result = tracer.run("What is the EU AI Act?")
+        with kairos_trace("my-agent") as tracer:
+            result = await Runner.run(agent, "What is the EU AI Act?")
+            tracer.record_result(result)
     """
+    kairos = create_kairos()
+    exec_ = kairos.execution(workflow_name=workflow_name)
+    try:
+        yield _KairosRunRecorder(exec_)
+    except Exception as e:
+        exec_.fail(str(e))
+        raise
 
-    class KairosTracer:
-        def __init__(self, runner: Runner, name: str):
-            self._runner = runner
-            self._name = name
-            self._kairos = create_kairos()
-            self._exec = None
 
-        def __enter__(self):
-            self._exec = self._kairos.execution(workflow_name=self._name)
-            return self
+class _KairosRunRecorder:
+    def __init__(self, exec_):
+        self._exec = exec_
 
-        def run(self, prompt: str, **kwargs):
-            if self._exec:
-                self._exec.set_prompt(prompt)
-            start = time.time()
-            result = self._runner.run(prompt, **kwargs)
-            latency = int((time.time() - start) * 1000)
+    def record_prompt(self, prompt: str, model: str | None = None):
+        self._exec.set_prompt(prompt, model)
 
-            if self._exec:
-                output = getattr(result, "final_output", str(result))
-                self._exec.complete(str(output)[:500])
-            return result
+    def record_tool(self, name: str, input=None, output=None, latency_ms: int | None = None):
+        self._exec.tool_call(name, input=input, output=output, latency_ms=latency_ms)
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            if exc_type and self._exec:
-                self._exec.fail(str(exc_val))
-            return False
+    def record_result(self, result, output_attr: str = "final_output"):
+        output = getattr(result, output_attr, str(result))
+        self._exec.complete(str(output)[:500])
 
-    return KairosTracer
+    def fail(self, error: str):
+        self._exec.fail(error)
+
+
+# ── Hook-based integration (recommended for tool call visibility) ─────────────
+
+def make_kairos_hooks(workflow_name: str = "openai-agent"):
+    """
+    Returns an AgentHooks instance that records every step to Kairos.
+
+    Usage:
+        from openai.agents import AgentHooks
+        hooks = make_kairos_hooks("research-agent")
+        result = await Runner.run(agent, prompt, hooks=hooks)
+    """
+    from openai.agents import AgentHooks
+
+    kairos = create_kairos()
+    exec_ = kairos.execution(workflow_name=workflow_name)
+    _tool_starts: dict[str, float] = {}
+
+    class KairosHooks(AgentHooks):
+        async def on_start(self, context, agent):
+            exec_.set_prompt(str(context.input) if hasattr(context, "input") else "")
+
+        async def on_tool_start(self, context, agent, tool):
+            _tool_starts[tool.name] = time.time()
+
+        async def on_tool_end(self, context, agent, tool, result):
+            latency = int((time.time() - _tool_starts.pop(tool.name, time.time())) * 1000)
+            exec_.tool_call(
+                name=tool.name,
+                input=getattr(tool, "input", None),
+                output=str(result)[:500],
+                latency_ms=latency,
+            )
+
+        async def on_end(self, context, agent, output):
+            exec_.complete(str(output)[:500])
+
+    return KairosHooks()
+
 
 # ── Example ────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    import asyncio
+    from openai.agents import Agent, Runner, function_tool
 
     @function_tool
     def search_web(query: str) -> str:
@@ -66,11 +104,19 @@ if __name__ == "__main__":
         tools=[search_web],
     )
 
-    runner = Runner(agent)
-    Tracer = kairos_trace()
+    async def main():
+        # Option A: context manager (simple)
+        with kairos_trace("research-agent") as tracer:
+            tracer.record_prompt("What is the EU AI Act?")
+            result = await Runner.run(agent, "What is the EU AI Act?")
+            tracer.record_result(result)
+            print(result.final_output)
 
-    with Tracer(runner, workflow_name="research-agent") as tracer:
-        result = tracer.run("What is the EU AI Act and what are its key requirements?")
+        # Option B: hooks (full tool call visibility)
+        hooks = make_kairos_hooks("research-agent-hooks")
+        result = await Runner.run(agent, "Summarize the EU AI Act.", hooks=hooks)
         print(result.final_output)
 
-    print("\nReplay this execution at: https://kairos-web-lyart.vercel.app/app")
+        print("\nReplay at: https://withkairos.dev/app")
+
+    asyncio.run(main())

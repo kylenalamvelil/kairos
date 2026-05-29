@@ -31,6 +31,9 @@ class KairosExecution:
     _workflow_name: Optional[str] = None
     _model: Optional[str] = None
     _started_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    _prompt_tokens: int = 0
+    _completion_tokens: int = 0
+    _cost_usd: float = 0.0
 
     def __post_init__(self) -> None:
         self._emit("workflow_started", {"workflow_id": self._workflow_id})
@@ -57,13 +60,16 @@ class KairosExecution:
         return self
 
     def set_tokens(self, prompt_tokens: int, completion_tokens: int) -> "KairosExecution":
+        self._prompt_tokens = prompt_tokens
+        self._completion_tokens = completion_tokens
         return self._emit("tokens_recorded", {"prompt_tokens": prompt_tokens, "completion_tokens": completion_tokens})
 
     def set_cost(self, usd: float) -> "KairosExecution":
+        self._cost_usd = usd
         return self._emit("cost_recorded", {"cost_usd": usd})
 
     def tool_call(self, name: str, input: Any = None, output: Any = None, latency_ms: int | None = None) -> "KairosExecution":
-        self._emit("tool_called", {"name": name, "input": input}, latency_ms=None)
+        self._emit("tool_called", {"name": name, "input": input})
         self._emit("tool_completed", {"name": name, "output": output}, latency_ms=latency_ms)
         return self
 
@@ -92,8 +98,8 @@ class KairosExecution:
             "name": self._workflow_name,
             "status": "completed",
             "started_at": self._started_at,
-            "total_tokens": 0,
-            "total_cost_usd": 0.0,
+            "total_tokens": self._prompt_tokens + self._completion_tokens,
+            "total_cost_usd": self._cost_usd,
         })
         return self
 

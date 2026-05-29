@@ -97,19 +97,20 @@ class KairosCallbackHandler(BaseCallbackHandler):
 # ── Example ────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+    import tempfile, os
+    from llama_index.core import VectorStoreIndex, Document
     from llama_index.core.callbacks import CallbackManager
 
     handler = KairosCallbackHandler(workflow_name="rag-agent")
     Settings.callback_manager = CallbackManager([handler])
 
-    # Your existing LlamaIndex code — no other changes needed
-    # documents = SimpleDirectoryReader("./docs").load_data()
-    # index = VectorStoreIndex.from_documents(documents)
-    # query_engine = index.as_query_engine()
-    # response = query_engine.query("What is the EU AI Act?")
-    # print(response)
+    # Create a minimal in-memory document to query
+    documents = [
+        Document(text="The EU AI Act is a comprehensive regulation that classifies AI systems by risk level. High-risk systems require conformity assessments before deployment.")
+    ]
+    index = VectorStoreIndex.from_documents(documents)
+    query_engine = index.as_query_engine()
+    response = query_engine.query("What is the EU AI Act?")
+    print(response)
 
-    print("KairosCallbackHandler ready.")
-    print("Add it to Settings.callback_manager and all queries will be recorded.")
-    print("Replay at: https://kairos-web-lyart.vercel.app/app")
+    print("\nReplay at: https://withkairos.dev/app")

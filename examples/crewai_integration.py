@@ -104,4 +104,4 @@ if __name__ == "__main__":
 
     result = crew.kickoff()
     print(result)
-    print("\nReplay this execution at: https://kairos-web-lyart.vercel.app/app")
+    print("\nReplay this execution at: https://withkairos.dev/app")

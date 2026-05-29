@@ -4,7 +4,7 @@ Kairos Quickstart — Python
 pip install kairos-sdk
 python quickstart.py
 
-Then open: https://kairos-web-lyart.vercel.app/app
+Then open: https://withkairos.dev/app
 """
 
 import time
@@ -44,5 +44,5 @@ exec.set_cost(0.0118)
 exec.complete("Summary: The EU AI Act requires high-risk AI providers to...")
 
 print("Done.")
-print("Open your dashboard: https://kairos-web-lyart.vercel.app/app")
+print("Open your dashboard: https://withkairos.dev/app")
 print("You should see 'research-agent' in the execution list with full replay.")

@@ -4,7 +4,7 @@
 
 **The operational infrastructure for autonomous systems.**
 
-[kairos-web-lyart.vercel.app](https://kairos-web-lyart.vercel.app) · [Docs](https://kairos-web-lyart.vercel.app/docs) · [npm](https://www.npmjs.com/package/kairos-sdk) · [PyPI](https://pypi.org/project/kairos-sdk)
+[withkairos.dev](https://withkairos.dev) · [Docs](https://withkairos.dev/docs) · [npm](https://www.npmjs.com/package/kairos-sdk) · [PyPI](https://pypi.org/project/kairos-sdk)
 
 </div>
 
@@ -50,7 +50,7 @@ exec.decision('EUR-Lex is most authoritative', confidence=0.93)
 exec.complete('Summary: ...')
 ```
 
-Open the [dashboard](https://kairos-web-lyart.vercel.app/app) to replay your execution.
+Open the [dashboard](https://withkairos.dev/app) to replay your execution.
 
 ---
 

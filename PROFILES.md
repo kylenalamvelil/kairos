@@ -21,7 +21,7 @@ github.com/withkairos
 
 **Website field:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 **Banner:** Use the KAIROS wordmark on a black background (#080a0f). Keep it minimal.
@@ -49,7 +49,7 @@ Kairos
 
 **Website:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 **Pin these repos** (drag to top of profile):
@@ -69,7 +69,7 @@ The operational infrastructure for autonomous systems.
 
 **Website:**
 ```
-https://kairos-web-lyart.vercel.app
+https://withkairos.dev
 ```
 
 **Email:**

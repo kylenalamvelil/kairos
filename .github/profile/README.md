@@ -19,7 +19,7 @@ npm install kairos-sdk
 pip install kairos-sdk
 ```
 
-[Dashboard](https://kairos-web-lyart.vercel.app/app) · [Docs](https://kairos-web-lyart.vercel.app/docs) · [Quick Start](https://github.com/withkairos/kairos#quick-start)
+[Dashboard](https://withkairos.dev/app) · [Docs](https://withkairos.dev/docs) · [Quick Start](https://github.com/withkairos/kairos#quick-start)
 
 ---
 

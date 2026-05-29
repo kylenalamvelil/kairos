@@ -4,7 +4,7 @@
  * npm install kairos-sdk
  * npx tsx quickstart.ts
  *
- * Then open: https://kairos-web-lyart.vercel.app/app
+ * Then open: https://withkairos.dev/app
  */
 
 import { createKairos } from 'kairos-sdk'
@@ -42,5 +42,5 @@ exec.setCost(0.0118)
 await exec.complete('Summary: The EU AI Act requires high-risk AI providers to...')
 
 console.log('Done.')
-console.log('Open your dashboard: https://kairos-web-lyart.vercel.app/app')
+console.log('Open your dashboard: https://withkairos.dev/app')
 console.log("You should see 'research-agent' in the execution list with full replay.")
