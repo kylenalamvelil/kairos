@@ -115,7 +115,7 @@ export default function Home() {
         <Wordmark size="sm" />
         <div className="hidden md:flex items-center gap-8">
           {[
-            { label: 'Docs',   href: '#' },
+            { label: 'Docs',   href: '/docs' },
             { label: 'SDK',    href: 'https://www.npmjs.com/package/kairos-sdk' },
             { label: 'GitHub', href: 'https://github.com/kylenalamvelil/kairos' },
           ].map(({ label, href }) => (
