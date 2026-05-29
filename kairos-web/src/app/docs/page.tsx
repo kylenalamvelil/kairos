@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { FeedbackWidget } from '@/components/FeedbackWidget'
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
@@ -260,6 +261,8 @@ exec.set_cost(0.0118)
 exec.complete('Summary: ...')
             `}</Code>
           </Section>
+
+          <FeedbackWidget page="docs" />
 
         </main>
       </div>

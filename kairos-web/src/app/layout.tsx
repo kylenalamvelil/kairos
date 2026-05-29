@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Sora, IBM_Plex_Sans, IBM_Plex_Mono, Michroma } from 'next/font/google'
+import { PostHogProvider } from '@/components/PostHogProvider'
 import './globals.css'
 
 const sora       = Sora({ subsets: ['latin'], weight: ['400','500','600'], variable: '--font-sora' })
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${sora.variable} ${ibmSans.variable} ${ibmMono.variable} ${michroma.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased"><PostHogProvider>{children}</PostHogProvider></body>
     </html>
   )
 }
