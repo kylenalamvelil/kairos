@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kairos — Execution Replay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050606;
+      --text: #f6f7f4;
+      --mint: #9cffc7;
+      --border: rgba(255, 255, 255, 0.08);
+      --panel-bg: rgba(255, 255, 255, 0.025);
+      --dot-green: #4ade80;
+      --dot-yellow: #fbbf24;
+      --dot-red: #ef4444;
+      --muted: rgba(246, 247, 244, 0.45);
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      gap: 0;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mint);
+      opacity: 0.85;
+    }
+
+    .page-title {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    /* ── Replay button ── */
+    .replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 6px;
+      padding: 6px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--mint);
+      border: 1px solid rgba(156, 255, 199, 0.3);
+      background: rgba(156, 255, 199, 0.05);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .replay-btn:hover {
+      background: rgba(156, 255, 199, 0.1);
+      border-color: rgba(156, 255, 199, 0.5);
+    }
+
+    .replay-icon {
+      font-size: 14px;
+      display: inline-block;
+      transition: transform 0.4s ease;
+    }
+
+    .replay-btn:active .replay-icon {
+      transform: rotate(-360deg);
+    }
+
+    /* ── Two-column grid ── */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 980px;
+    }
+
+    @media (max-width: 700px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Panel base ── */
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel-bg);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .panel-header .traffic-lights {
+      display: flex;
+      gap: 5px;
+      margin-right: 4px;
+    }
+
+    .tl {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .tl-red   { background: #ff5f56; }
+    .tl-yellow{ background: #ffbd2e; }
+    .tl-green { background: #27c93f; }
+
+    .panel-body {
+      padding: 20px 18px;
+    }
+
+    /* ── LEFT: Agent Output ── */
+    .agent-panel .panel-body {
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .output-label {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .agent-response {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text);
+      min-height: 80px;
+      position: relative;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: var(--mint);
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* unsafe badge */
+    .unsafe-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dot-red);
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .unsafe-badge.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .unsafe-explanation {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.5s ease 0.15s, transform 0.5s ease 0.15s;
+    }
+
+    .unsafe-explanation.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .unsafe-explanation strong {
+      color: var(--dot-red);
+      font-weight: 500;
+    }
+
+    /* ── RIGHT: Kairos Trace ── */
+    .trace-panel .panel-body {
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-bottom: 16px;
+    }
+
+    .trace-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      flex: 1;
+    }
+
+    .trace-event {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .trace-event:last-child {
+      border-bottom: none;
+    }
+
+    .trace-event.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .trace-ts {
+      color: var(--muted);
+      font-size: 11px;
+      min-width: 38px;
+    }
+
+    .trace-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .trace-dot.green  { background: var(--dot-green); box-shadow: 0 0 0 0 var(--dot-green); }
+    .trace-dot.yellow { background: var(--dot-yellow); }
+    .trace-dot.red    { background: var(--dot-red); }
+
+    .trace-dot.pulse {
+      animation: pulse-red 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-red {
+      0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      70%  { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .trace-label {
+      color: var(--text);
+      flex: 1;
+    }
+
+    .trace-label .key  { color: var(--muted); }
+    .trace-label .val  { color: var(--text); }
+    .trace-label .warn { color: var(--dot-yellow); }
+    .trace-label .err  { color: var(--dot-red); font-weight: 600; }
+    .trace-label .ok   { color: var(--dot-green); }
+
+    /* status bar */
+    .status-bar {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .status-bar.visible {
+      opacity: 1;
+    }
+
+    .stat-pair { display: flex; gap: 5px; }
+    .stat-key  { color: var(--muted); }
+    .stat-val  { font-weight: 600; }
+    .stat-val.unsafe  { color: var(--dot-red); }
+    .stat-val.high    { color: var(--dot-yellow); }
+    .stat-val.partial { color: var(--dot-yellow); }
+
+    /* ── Insight line ── */
+    .insight {
+      margin-top: 28px;
+      max-width: 980px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      color: var(--mint);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      padding: 0 4px;
+    }
+
+    .insight.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── CTA buttons ── */
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 11px 22px;
+      border-radius: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, background 0.2s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary {
+      background: var(--mint);
+      color: #050606;
+      border: none;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <span class="eyebrow">Execution Replay</span>
+    <h1 class="page-title">Kairos caught what the agent didn't.</h1>
+    <p class="page-subtitle">A contract review agent returned a confident answer — after losing 66% of the document. This is what that failure looks like from the inside.</p>
+    <button class="replay-btn" id="replayBtn">
+      <span class="replay-icon">⟳</span> Replay
+    </button>
+  </div>
+
+  <!-- Two columns -->
+  <div class="columns">
+
+    <!-- LEFT: Agent Output -->
+    <div class="panel agent-panel">
+      <div class="panel-header">
+        <div class="traffic-lights">
+          <div class="tl tl-red"></div>
+          <div class="tl tl-yellow"></div>
+          <div class="tl tl-green"></div>
+        </div>
+        Agent Output
+      </div>
+      <div class="panel-body">
+        <div>
+          <div class="output-label">agent response &mdash; run #4417</div>
+          <div class="agent-response" id="agentResponse">
+            <span class="cursor" id="cursor"></span>
+          </div>
+        </div>
+        <div id="unsafeBadge" class="unsafe-badge">⚠ UNSAFE OUTPUT</div>
+        <div id="unsafeExplanation" class="unsafe-explanation">
+          Agent returned a <strong>high-confidence answer</strong> after context loss.<br />
+          Document was never fully retrieved. 66% of content was never seen.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Kairos Trace -->
+    <div class="panel trace-panel">
+      <div class="panel-header">
+        <div class="traffic-lights">
+          <div class="tl tl-red"></div>
+          <div class="tl tl-yellow"></div>
+          <div class="tl tl-green"></div>
+        </div>
+        Kairos Trace &mdash; Execution Replay
+      </div>
+      <div class="panel-body">
+        <ul class="trace-list" id="traceList">
+          <li class="trace-event" data-delay="0">
+            <span class="trace-ts">00:00</span>
+            <span class="trace-dot green"></span>
+            <span class="trace-label"><span class="ok">agent.started</span></span>
+          </li>
+          <li class="trace-event" data-delay="600">
+            <span class="trace-ts">00:01</span>
+            <span class="trace-dot green"></span>
+            <span class="trace-label"><span class="key">tool.called: </span><span class="val">document.fetch</span></span>
+          </li>
+          <li class="trace-event" data-delay="1200">
+            <span class="trace-ts">00:08</span>
+            <span class="trace-dot yellow"></span>
+            <span class="trace-label"><span class="warn">tool.timeout</span></span>
+          </li>
+          <li class="trace-event" data-delay="1800">
+            <span class="trace-ts">00:09</span>
+            <span class="trace-dot yellow"></span>
+            <span class="trace-label"><span class="key">retry.triggered &mdash; </span><span class="warn">attempt 1/2</span></span>
+          </li>
+          <li class="trace-event" data-delay="2400">
+            <span class="trace-ts">00:14</span>
+            <span class="trace-dot yellow"></span>
+            <span class="trace-label"><span class="warn">tool.timeout</span></span>
+          </li>
+          <li class="trace-event" data-delay="3000">
+            <span class="trace-ts">00:15</span>
+            <span class="trace-dot yellow"></span>
+            <span class="trace-label"><span class="key">retry.triggered &mdash; </span><span class="warn">attempt 2/2</span></span>
+          </li>
+          <li class="trace-event" data-delay="3600">
+            <span class="trace-ts">00:21</span>
+            <span class="trace-dot red"></span>
+            <span class="trace-label"><span class="key">context.partial &mdash; </span><span class="err">34% retrieved</span></span>
+          </li>
+          <li class="trace-event" data-delay="4200">
+            <span class="trace-ts">00:22</span>
+            <span class="trace-dot red"></span>
+            <span class="trace-label"><span class="err">context.loss.detected</span></span>
+          </li>
+          <li class="trace-event" data-delay="4800">
+            <span class="trace-ts">00:24</span>
+            <span class="trace-dot red"></span>
+            <span class="trace-label"><span class="key">agent.returned_answer</span></span>
+          </li>
+          <li class="trace-event" data-delay="5400">
+            <span class="trace-ts">00:24</span>
+            <span class="trace-dot red pulse" id="lastDot"></span>
+            <span class="trace-label"><span class="err">output.flagged: unsafe</span></span>
+          </li>
+        </ul>
+        <div class="status-bar" id="statusBar">
+          <div class="stat-pair">
+            <span class="stat-key">Status:</span>
+            <span class="stat-val unsafe">UNSAFE</span>
+          </div>
+          <div class="stat-pair">
+            <span class="stat-key">Confidence:</span>
+            <span class="stat-val high">HIGH</span>
+          </div>
+          <div class="stat-pair">
+            <span class="stat-key">Retries:</span>
+            <span class="stat-val">2</span>
+          </div>
+          <div class="stat-pair">
+            <span class="stat-key">Context:</span>
+            <span class="stat-val partial">34%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Insight line -->
+  <p class="insight" id="insight">
+    "The issue was not the failed tool call. The issue was that the agent still returned an answer."
+  </p>
+
+  <!-- CTA -->
+  <div class="cta-row">
+    <a href="/app" class="btn btn-primary">Start tracing free</a>
+    <a href="/docs" class="btn btn-secondary">View documentation</a>
+  </div>
+
+  <script>
+    const AGENT_TEXT = 'Contract reviewed. All clauses checked. No critical issues identified.';
+    const TYPING_DELAY = 38;        // ms per character
+    const TYPING_START  = 5800;     // starts after last trace event appears
+    const BADGE_DELAY   = TYPING_START + AGENT_TEXT.length * TYPING_DELAY + 400;
+    const INSIGHT_DELAY = BADGE_DELAY + 600;
+
+    let timers = [];
+
+    function clearTimers() {
+      timers.forEach(t => clearTimeout(t));
+      timers = [];
+    }
+
+    function schedule(fn, delay) {
+      timers.push(setTimeout(fn, delay));
+    }
+
+    function resetUI() {
+      // trace events
+      document.querySelectorAll('.trace-event').forEach(el => {
+        el.classList.remove('visible');
+      });
+      // status bar
+      document.getElementById('statusBar').classList.remove('visible');
+      // agent response
+      const resp = document.getElementById('agentResponse');
+      resp.innerHTML = '<span class="cursor" id="cursor"></span>';
+      // badge
+      document.getElementById('unsafeBadge').classList.remove('visible');
+      document.getElementById('unsafeExplanation').classList.remove('visible');
+      // insight
+      document.getElementById('insight').classList.remove('visible');
+    }
+
+    function runAnimation() {
+      clearTimers();
+      resetUI();
+
+      // Animate trace events
+      const events = document.querySelectorAll('.trace-event');
+      events.forEach(el => {
+        const delay = parseInt(el.dataset.delay, 10);
+        schedule(() => el.classList.add('visible'), delay);
+      });
+
+      // Status bar appears after last event
+      schedule(() => {
+        document.getElementById('statusBar').classList.add('visible');
+      }, 5400 + 500);
+
+      // Typing the agent response
+      schedule(() => {
+        const resp = document.getElementById('agentResponse');
+        resp.innerHTML = '<span class="cursor" id="cursor"></span>';
+        let i = 0;
+        function typeNext() {
+          if (i < AGENT_TEXT.length) {
+            const cursor = resp.querySelector('.cursor');
+            const textNode = document.createTextNode(AGENT_TEXT[i]);
+            resp.insertBefore(textNode, cursor);
+            i++;
+            timers.push(setTimeout(typeNext, TYPING_DELAY));
+          } else {
+            // Remove cursor after typing finishes
+            const cursor = resp.querySelector('.cursor');
+            if (cursor) cursor.remove();
+          }
+        }
+        typeNext();
+      }, TYPING_START);
+
+      // Unsafe badge
+      schedule(() => {
+        document.getElementById('unsafeBadge').classList.add('visible');
+        document.getElementById('unsafeExplanation').classList.add('visible');
+      }, BADGE_DELAY);
+
+      // Insight
+      schedule(() => {
+        document.getElementById('insight').classList.add('visible');
+      }, INSIGHT_DELAY);
+    }
+
+    // Replay button
+    document.getElementById('replayBtn').addEventListener('click', () => {
+      const icon = document.querySelector('.replay-icon');
+      icon.style.transition = 'transform 0.5s ease';
+      icon.style.transform = 'rotate(-360deg)';
+      setTimeout(() => {
+        icon.style.transform = 'rotate(0deg)';
+        icon.style.transition = 'none';
+      }, 500);
+      runAnimation();
+    });
+
+    // Auto-run on load
+    runAnimation();
+  </script>
+</body>
+</html>
