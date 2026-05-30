@@ -3,540 +3,1176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kairos &mdash; Deploy AI workers you can trust.</title>
-  <meta name="description" content="Deploy AI workers for your business. Every deployment runs on Kairos Trace &mdash; full replay, audit trails, and governance built in." />
+  <title>Kairos — The operating layer for AI workers</title>
+  <meta name="description" content="Deploy AI workers you can trust. AI receptionists, sales agents, and operations workers — built for your business and powered by Kairos Trace." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
       --bg: #050606;
       --text: #f6f7f4;
       --accent: #9cffc7;
       --muted: #6b7280;
-      --border: rgba(255,255,255,0.08);
-      --card-bg: rgba(255,255,255,0.025);
-      --max: 1080px;
+      --surface: #0d0f0e;
+      --surface-2: #131614;
+      --border: #1c1f1e;
+      --border-light: #242826;
     }
+
     html { scroll-behavior: smooth; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 16px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    a { color: inherit; text-decoration: none; }
 
-    /* NAV */
+    /* ── NAV ──────────────────────────────────────────────────────────────── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: var(--bg);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease, border-bottom 0.3s ease, backdrop-filter 0.3s ease;
     }
-    nav.scrolled { border-bottom: 1px solid var(--border); }
-    .nav-inner {
-      max-width: var(--max); margin: 0 auto; padding: 0 24px;
-      height: 60px; display: flex; align-items: center; justify-content: space-between;
+
+    nav.scrolled {
+      background: rgba(5, 6, 6, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
     }
-    .nav-logo { font-weight: 700; font-size: 15px; letter-spacing: 0.12em; }
-    .nav-links { display: flex; align-items: center; gap: 28px; }
-    .nav-links a { color: var(--muted); font-size: 14px; transition: color 0.15s; }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      color: var(--text);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+
     .nav-links a:hover { color: var(--text); }
-    .btn-ghost {
-      padding: 7px 16px;
-      border: 1px solid rgba(255,255,255,0.18);
+
+    .btn-nav {
+      background: var(--accent) !important;
+      color: #050606 !important;
+      padding: 8px 20px;
       border-radius: 6px;
-      font-size: 13px; font-weight: 500;
-      color: var(--text) !important;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .btn-ghost:hover { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.04); }
-    .btn-primary {
-      padding: 11px 24px;
-      background: var(--text); color: var(--bg);
-      border-radius: 6px; font-size: 14px; font-weight: 600;
-      transition: opacity 0.15s; display: inline-block;
-    }
-    .btn-primary:hover { opacity: 0.88; }
-    .btn-outline {
-      padding: 11px 24px;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 6px; font-size: 14px; font-weight: 500;
-      color: var(--text); transition: border-color 0.15s; display: inline-block;
-    }
-    .btn-outline:hover { border-color: rgba(255,255,255,0.4); }
-
-    /* SECTIONS */
-    .section { padding: 96px 24px; }
-    .section-inner { max-width: var(--max); margin: 0 auto; }
-    .label {
-      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-      font-weight: 600; color: var(--muted); margin-bottom: 20px;
-    }
-    .label-accent { color: var(--accent); }
-    h2 {
-      font-size: 40px; font-weight: 700; letter-spacing: -0.03em;
-      line-height: 1.15; margin-bottom: 16px;
-    }
-    .section-sub {
-      color: var(--muted); font-size: 18px; max-width: 560px;
-      margin-bottom: 56px; line-height: 1.6;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.15s;
     }
 
-    /* HERO */
-    .hero {
-      min-height: 100vh; display: flex; align-items: center;
-      text-align: center; padding: 120px 24px 80px;
+    .btn-nav:hover { opacity: 0.88 !important; transform: translateY(-1px); }
+
+    /* ── HERO ─────────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
     }
-    .hero-inner { max-width: 820px; margin: 0 auto; }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -240px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse at center, rgba(156,255,199,0.065) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
     .hero-badge {
-      display: inline-block; font-size: 12px; letter-spacing: 0.1em;
-      text-transform: uppercase; font-weight: 600;
-      color: var(--accent); margin-bottom: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(156,255,199,0.07);
+      border: 1px solid rgba(156,255,199,0.22);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 40px;
     }
-    .hero-h1 {
-      font-size: clamp(44px, 6vw, 72px); font-weight: 700;
-      letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 24px;
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
     }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.75); }
+    }
+
+    h1.hero-headline {
+      font-size: clamp(38px, 5.8vw, 68px);
+      font-weight: 800;
+      letter-spacing: -0.033em;
+      line-height: 1.05;
+      max-width: 880px;
+      margin-bottom: 28px;
+    }
+
     .hero-sub {
-      color: var(--muted); font-size: 19px; max-width: 580px;
-      margin: 0 auto 40px; line-height: 1.65;
+      font-size: clamp(16px, 1.9vw, 19px);
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.75;
+      margin-bottom: 48px;
     }
-    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 64px;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #050606;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.91; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border-light);
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-outline:hover { border-color: rgba(156,255,199,0.42); color: var(--accent); transform: translateY(-1px); }
+
+    .hero-divider {
+      width: 100%;
+      max-width: 640px;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 40px;
+    }
+
     .hero-stats {
-      margin-top: 56px; padding-top: 40px;
+      display: flex;
+      gap: 64px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-stat-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── DEMO ─────────────────────────────────────────────────────────────── */
+    #demo {
+      padding: 80px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    .demo-card {
+      width: 100%;
+      max-width: 780px;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 70px rgba(156,255,199,0.07), 0 32px 80px rgba(0,0,0,0.55);
+    }
+
+    .demo-card-header {
+      padding: 15px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .demo-dots { display: flex; gap: 6px; }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.red   { background: #ff5f57; }
+    .demo-dot.yellow{ background: #ffbd2e; }
+    .demo-dot.green { background: #28c840; }
+
+    .demo-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      letter-spacing: 0.02em;
+    }
+    .demo-title span { color: var(--accent); }
+
+    .demo-body { padding: 24px; min-height: 290px; }
+
+    .timeline-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 56px 20px 1fr 72px;
+      gap: 16px;
+    }
+
+    .timeline-events { display: flex; flex-direction: column; gap: 0; }
+
+    .timeline-event {
+      display: grid;
+      grid-template-columns: 56px 20px 1fr 72px;
+      gap: 16px;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(28,31,30,0.7);
+      opacity: 0;
+      transform: translateY(7px);
+    }
+
+    .timeline-event:last-child { border-bottom: none; }
+
+    /* Staggered animation — driven by CSS, retriggered by JS class swap */
+    .timeline-event:nth-child(1) { animation: eventIn 0.4s ease forwards 0.4s; }
+    .timeline-event:nth-child(2) { animation: eventIn 0.4s ease forwards 1.1s; }
+    .timeline-event:nth-child(3) { animation: eventIn 0.4s ease forwards 1.9s; }
+    .timeline-event:nth-child(4) { animation: eventIn 0.4s ease forwards 2.8s; }
+    .timeline-event:nth-child(5) { animation: eventIn 0.4s ease forwards 3.8s; }
+    .timeline-event:nth-child(6) { animation: eventIn 0.4s ease forwards 4.8s; }
+
+    @keyframes eventIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .event-time {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .event-dot-wrap { display: flex; align-items: center; justify-content: center; }
+
+    .event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .event-dot.ok   { background: #28c840; box-shadow: 0 0 6px rgba(40,200,64,0.55); }
+    .event-dot.warn { background: #ffbd2e; box-shadow: 0 0 6px rgba(255,189,46,0.55); }
+    .event-dot.risk { background: #ff453a; box-shadow: 0 0 6px rgba(255,69,58,0.55); }
+
+    .event-name {
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--text);
+    }
+
+    .event-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: 2px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0;
+    }
+
+    .event-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 7px;
+      border-radius: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .tag-ok   { background: rgba(40,200,64,0.12);  color: #28c840; }
+    .tag-warn { background: rgba(255,189,46,0.12); color: #ffbd2e; }
+    .tag-risk { background: rgba(255,69,58,0.12);  color: #ff453a; }
+
+    .demo-status-bar {
+      padding: 13px 24px;
+      background: rgba(0,0,0,0.32);
       border-top: 1px solid var(--border);
-      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
     }
-    .stat { color: var(--muted); font-size: 13px; }
-    .stat strong { color: var(--text); display: block; font-size: 22px; font-weight: 700; margin-bottom: 2px; }
 
-    /* WORKERS GRID */
+    .status-item {
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--muted);
+    }
+    .status-item span { font-weight: 600; }
+    .val-unsafe { color: #ff453a; }
+    .val-warn   { color: #ffbd2e; }
+    .val-ok     { color: var(--accent); }
+
+    .demo-tagline {
+      margin-top: 36px;
+      max-width: 580px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+      font-style: italic;
+    }
+    .demo-tagline strong { color: var(--text); font-style: normal; }
+
+    /* ── SHARED SECTION ───────────────────────────────────────────────────── */
+    section { padding: 100px 24px; }
+
+    .section-inner { max-width: 1080px; margin: 0 auto; }
+
+    .section-header { max-width: 640px; margin-bottom: 64px; }
+    .section-header h2 {
+      font-size: clamp(28px, 3.8vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-header p { font-size: 17px; color: var(--muted); line-height: 1.72; }
+
+    /* ── WORKERS ──────────────────────────────────────────────────────────── */
+    #workers { border-top: 1px solid var(--border); }
+
     .workers-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
     }
+
     .worker-card {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 12px; padding: 28px;
-      transition: border-color 0.2s;
+      background: var(--surface);
+      padding: 36px 32px;
+      transition: background 0.2s;
     }
-    .worker-card:hover { border-color: rgba(255,255,255,0.18); }
+    .worker-card:hover { background: var(--surface-2); }
+
     .worker-icon {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: rgba(156,255,199,0.1);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px; font-size: 16px;
-    }
-    .worker-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-    .worker-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
-    .worker-tag {
-      display: inline-block; margin-top: 14px; font-size: 11px;
-      color: var(--accent); letter-spacing: 0.06em;
-      font-weight: 600; text-transform: uppercase;
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      background: rgba(156,255,199,0.07);
+      border: 1px solid rgba(156,255,199,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 20px;
     }
 
-    /* TRACE SECTION */
-    .trace-wrap {
-      background: rgba(156,255,199,0.03);
-      border-top: 1px solid rgba(156,255,199,0.1);
-      border-bottom: 1px solid rgba(156,255,199,0.1);
-    }
-    .trace-features {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 0; border: 1px solid var(--border); border-radius: 12px;
-      overflow: hidden; margin-top: 48px;
-    }
-    .trace-feat {
-      padding: 32px; border-right: 1px solid var(--border);
-    }
-    .trace-feat:last-child { border-right: none; }
-    .trace-feat h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
-    .trace-feat p { color: var(--muted); font-size: 14px; line-height: 1.65; }
-    .trace-num {
-      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--accent); font-weight: 600; margin-bottom: 12px;
+    .worker-card h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 10px; }
+    .worker-card p { font-size: 14px; color: var(--muted); line-height: 1.68; }
+
+    /* ── TRACE ────────────────────────────────────────────────────────────── */
+    #trace {
+      background: var(--surface);
+      border-top: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
     }
 
-    /* EXAMPLE DEPLOYMENTS */
+    .trace-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .trace-col { padding-right: 48px; }
+    .trace-col:not(:last-child) {
+      border-right: 1px solid var(--border-light);
+      margin-right: 48px;
+    }
+
+    .trace-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 16px; }
+    .trace-col h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .trace-col p { font-size: 15px; color: var(--muted); line-height: 1.72; }
+
+    /* ── EXAMPLES ─────────────────────────────────────────────────────────── */
+    #examples { border-top: 1px solid var(--border); }
+
     .examples-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
     .example-card {
-      border: 1px solid var(--border); border-radius: 12px; padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
       transition: border-color 0.2s;
     }
-    .example-card:hover { border-color: rgba(255,255,255,0.18); }
-    .example-buyer { font-size: 13px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-    .example-product { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
-    .example-gets { list-style: none; }
-    .example-gets li {
-      font-size: 13px; color: var(--muted); padding: 5px 0;
-      border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;
-    }
-    .example-gets li:last-child { border-bottom: none; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .example-card:hover { border-color: var(--border-light); }
 
-    /* ENTERPRISE */
-    .ent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 48px; }
-    .ent-card {
-      border: 1px solid var(--border); border-radius: 12px; padding: 28px;
+    .example-chip {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 4px 10px;
+      margin-bottom: 16px;
     }
-    .ent-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
-    .ent-card p { color: var(--muted); font-size: 14px; line-height: 1.65; }
 
-    /* PRICING */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .price-card {
-      border: 1px solid var(--border); border-radius: 12px; padding: 32px;
-      display: flex; flex-direction: column;
-    }
-    .price-card.featured { border-color: var(--accent); }
-    .price-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; font-weight: 600; }
-    .price-label.accent { color: var(--accent); }
-    .price-amount { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 4px; }
-    .price-period { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-    .price-list { list-style: none; margin-bottom: 32px; flex: 1; }
-    .price-list li { font-size: 14px; color: var(--muted); padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; }
-    .price-list li:last-child { border-bottom: none; }
-    .check { color: var(--accent); font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+    .example-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .example-worker { font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 16px; }
 
-    /* CONTACT */
-    .contact-wrap { max-width: 560px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-    label { font-size: 13px; color: var(--muted); font-weight: 500; }
-    input, textarea {
-      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-      border-radius: 6px; padding: 10px 14px; font-size: 14px; color: var(--text);
-      font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%;
+    .example-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .example-features li {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 9px;
     }
-    input:focus, textarea:focus { border-color: rgba(255,255,255,0.3); }
-    textarea { resize: vertical; min-height: 120px; }
-    .form-submit { margin-top: 8px; }
+    .example-features li::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border); padding: 40px 24px;
+    /* ── ENTERPRISE ───────────────────────────────────────────────────────── */
+    #enterprise { background: var(--surface); border-top: 1px solid var(--border); }
+
+    .enterprise-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    .enterprise-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px 32px;
+      transition: border-color 0.2s;
     }
-    .footer-inner {
-      max-width: var(--max); margin: 0 auto;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+    .enterprise-card:hover { border-color: var(--border-light); }
+
+    .enterprise-icon { font-size: 22px; margin-bottom: 18px; }
+    .enterprise-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .enterprise-card p { font-size: 14px; color: var(--muted); line-height: 1.72; }
+
+    /* ── PRICING ──────────────────────────────────────────────────────────── */
+    #pricing { border-top: 1px solid var(--border); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
     }
-    .footer-left { font-size: 14px; color: var(--muted); }
-    .footer-left strong { color: var(--text); font-weight: 700; letter-spacing: 0.08em; margin-right: 16px; }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a { font-size: 13px; color: var(--muted); transition: color 0.15s; }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 32px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--border-light); }
+    .pricing-card.featured { border-color: var(--accent); background: rgba(156,255,199,0.018); }
+    .pricing-card.featured:hover { border-color: var(--accent); }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #050606;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .pricing-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .pricing-price {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    .pricing-period { font-size: 15px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+    .pricing-from { font-size: 30px; }
+
+    .pricing-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; margin-top: 4px; }
+    .pricing-divider { height: 1px; background: var(--border); margin-bottom: 26px; }
+
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .pricing-features li {
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 12px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn-pricing-primary {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--accent);
+      color: #050606;
+      padding: 12px;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-pricing-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-pricing-outline {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      color: var(--text);
+      padding: 12px;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border-light);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .btn-pricing-outline:hover { border-color: rgba(156,255,199,0.32); transform: translateY(-1px); }
+
+    /* ── CONTACT ──────────────────────────────────────────────────────────── */
+    #contact { background: var(--surface); border-top: 1px solid var(--border); }
+
+    .contact-inner { max-width: 640px; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; margin-top: 48px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+    .form-group input,
+    .form-group textarea {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: 7px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--muted); opacity: 0.55; }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: rgba(156,255,199,0.42); }
+
+    .btn-submit {
+      background: var(--accent);
+      color: #050606;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      align-self: flex-start;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--border); padding: 64px 48px 40px; }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .footer-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text); margin-bottom: 8px; }
+    .footer-tagline { font-size: 13px; color: var(--muted); }
+
+    .footer-links { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; }
+    .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text); }
 
+    .footer-bottom { padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+
+    /* ── FADE IN OBSERVER ─────────────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
     @media (max-width: 768px) {
-      h2 { font-size: 30px; }
+      nav { padding: 0 20px; }
+      .nav-links a:not(.btn-nav) { display: none; }
+
+      h1.hero-headline { font-size: 36px; }
+      .hero-stats { gap: 28px; }
+
       .workers-grid { grid-template-columns: 1fr; }
-      .trace-features { grid-template-columns: 1fr; }
-      .trace-feat { border-right: none; border-bottom: 1px solid var(--border); }
-      .trace-feat:last-child { border-bottom: none; }
-      .examples-grid { grid-template-columns: 1fr; }
-      .ent-grid { grid-template-columns: 1fr; }
+      .worker-card { padding: 28px 24px; }
+
+      .trace-cols { grid-template-columns: 1fr; }
+      .trace-col { padding-right: 0; }
+      .trace-col:not(:last-child) { border-right: none; margin-right: 0; border-bottom: 1px solid var(--border-light); padding-bottom: 40px; margin-bottom: 40px; }
+
+      .examples-grid,
+      .enterprise-grid,
       .pricing-grid { grid-template-columns: 1fr; }
+
       .form-row { grid-template-columns: 1fr; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
-      .hero-stats { gap: 24px; }
+
+      footer { padding: 48px 20px 32px; }
+      .footer-top { flex-direction: column; gap: 28px; }
+      .footer-links { gap: 18px; }
+
+      section { padding: 72px 20px; }
+
+      .timeline-header { grid-template-columns: 46px 18px 1fr 60px; font-size: 10px; }
+      .timeline-event { grid-template-columns: 46px 18px 1fr 60px; }
+      .event-tag { font-size: 10px; padding: 2px 6px; }
+      .event-name { font-size: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-stats { gap: 20px; }
+      .demo-status-bar { gap: 16px; }
+      .status-item { font-size: 11px; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── NAV ───────────────────────────────────────────────────────────────── -->
 <nav id="nav">
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">KAIROS</a>
-    <div class="nav-links">
-      <a href="#workers" class="hide-mobile">AI Workers</a>
-      <a href="#trace" class="hide-mobile">Trace</a>
-      <a href="/docs" class="hide-mobile">Docs</a>
-      <a href="#contact" class="btn-ghost">Book a deployment</a>
-    </div>
+  <a class="nav-logo" href="#">Kairos</a>
+  <div class="nav-links">
+    <a href="#workers">AI Workers</a>
+    <a href="#trace">Trace</a>
+    <a href="#contact">Docs</a>
+    <a href="#contact" class="btn-nav">Book a deployment</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge">Deploy. Observe. Control.</div>
-    <h1 class="hero-h1">Deploy AI workers<br>you can trust.</h1>
-    <p class="hero-sub">AI receptionists, sales agents, and operations workers&mdash;built for your business and powered by Kairos Trace infrastructure. Every action recorded. Every decision replayable.</p>
-    <div class="hero-btns">
-      <a href="#contact" class="btn-primary">Book a deployment</a>
-      <a href="/app" class="btn-outline">Start tracing free</a>
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-badge">Deploy. Observe. Control.</div>
+  <h1 class="hero-headline">Deploy AI workers<br>you can trust.</h1>
+  <p class="hero-sub">AI receptionists, sales agents, and operations workers — built for your business and powered by Kairos Trace. Every action recorded. Every decision replayable.</p>
+  <div class="hero-ctas">
+    <a href="#contact" class="btn-primary">Book a deployment</a>
+    <a href="#contact" class="btn-outline">Start tracing free</a>
+  </div>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-value">48hr deployment</div>
+      <div class="hero-stat-label">From spec to live</div>
     </div>
-    <div class="hero-stats">
-      <div class="stat"><strong>48hr</strong>deployment to production</div>
-      <div class="stat"><strong>100%</strong>of actions recorded</div>
-      <div class="stat"><strong>EU AI Act</strong>ready out of the box</div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">100% actions recorded</div>
+      <div class="hero-stat-label">Every decision logged</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">EU AI Act ready</div>
+      <div class="hero-stat-label">Compliance built in</div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- AI WORKERS -->
-<div class="section" id="workers">
+<!-- ── LIVE DEMO ──────────────────────────────────────────────────────────── -->
+<section id="demo">
+  <div class="section-label">Kairos Trace — Execution Replay</div>
+  <div class="demo-card" id="demo-card">
+    <div class="demo-card-header">
+      <div class="demo-dots">
+        <div class="demo-dot red"></div>
+        <div class="demo-dot yellow"></div>
+        <div class="demo-dot green"></div>
+      </div>
+      <div class="demo-title"><span>agent</span>.review_contract &mdash; execution replay</div>
+    </div>
+    <div class="demo-body">
+      <div class="timeline-header">
+        <span>TIME</span>
+        <span></span>
+        <span>EVENT</span>
+        <span>STATUS</span>
+      </div>
+      <div class="timeline-events" id="timeline-events">
+        <div class="timeline-event">
+          <div class="event-time">00:01</div>
+          <div class="event-dot-wrap"><div class="event-dot ok"></div></div>
+          <div class="event-name">tool.called<div class="event-sub">contract_parser &rarr; input_doc_v3.pdf</div></div>
+          <div class="event-tag tag-ok">OK</div>
+        </div>
+        <div class="timeline-event">
+          <div class="event-time">00:08</div>
+          <div class="event-dot-wrap"><div class="event-dot ok"></div></div>
+          <div class="event-name">contract.diff<div class="event-sub">14 clauses extracted, 3 flagged</div></div>
+          <div class="event-tag tag-ok">OK</div>
+        </div>
+        <div class="timeline-event">
+          <div class="event-time">00:23</div>
+          <div class="event-dot-wrap"><div class="event-dot warn"></div></div>
+          <div class="event-name">tool.timeout<div class="event-sub">legal_database &rarr; response exceeded 10s</div></div>
+          <div class="event-tag tag-warn">TIMEOUT</div>
+        </div>
+        <div class="timeline-event">
+          <div class="event-time">00:24</div>
+          <div class="event-dot-wrap"><div class="event-dot warn"></div></div>
+          <div class="event-name">retry.triggered<div class="event-sub">attempt 2 of 3 &mdash; exponential backoff</div></div>
+          <div class="event-tag tag-warn">RETRY</div>
+        </div>
+        <div class="timeline-event">
+          <div class="event-time">00:35</div>
+          <div class="event-dot-wrap"><div class="event-dot risk"></div></div>
+          <div class="event-name">context.lost<div class="event-sub">legal_database unreachable &mdash; flagged clauses unverified</div></div>
+          <div class="event-tag tag-risk">RISK</div>
+        </div>
+        <div class="timeline-event">
+          <div class="event-time">00:36</div>
+          <div class="event-dot-wrap"><div class="event-dot risk"></div></div>
+          <div class="event-name">agent.returned_answer<div class="event-sub">"No issues found." &mdash; delivered without verification</div></div>
+          <div class="event-tag tag-risk">UNSAFE</div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-status-bar">
+      <div class="status-item">Status: <span class="val-unsafe">unsafe</span></div>
+      <div class="status-item">Confidence: <span class="val-warn">high</span></div>
+      <div class="status-item">Retries: <span>2</span></div>
+      <div class="status-item">Replay: <span class="val-ok">ready</span></div>
+    </div>
+  </div>
+  <p class="demo-tagline">
+    The issue was not the failed tool call.<br>
+    <strong>The issue was that the agent still returned an answer.</strong>
+  </p>
+</section>
+
+<!-- ── AI WORKERS ─────────────────────────────────────────────────────────── -->
+<section id="workers">
   <div class="section-inner">
-    <div class="label">What customers buy</div>
-    <h2>AI workers for every function.</h2>
-    <p class="section-sub">Your business does not buy observability software. It buys AI workers that replace expensive manual processes. Kairos builds, deploys, and operates them.</p>
-    <div class="workers-grid">
+    <div class="section-header fade-in">
+      <div class="section-label">What customers buy</div>
+      <h2>AI workers for every function.</h2>
+      <p>Your business buys outcomes. Kairos builds, deploys, and operates the AI workers that deliver them.</p>
+    </div>
+    <div class="workers-grid fade-in">
       <div class="worker-card">
-        <div class="worker-icon">&#9990;</div>
+        <div class="worker-icon">📞</div>
         <h3>AI Receptionist</h3>
-        <p>Answers every call, books appointments, handles FAQs, and captures patient or client details&mdash;24 hours a day without staff.</p>
-        <span class="worker-tag">Popular with clinics &amp; practices</span>
+        <p>Answers every call, books appointments, handles FAQs 24/7. Zero missed enquiries.</p>
       </div>
       <div class="worker-card">
-        <div class="worker-icon">&#9889;</div>
+        <div class="worker-icon">📈</div>
         <h3>Revenue Agent</h3>
-        <p>Qualifies inbound leads, follows up automatically, and moves prospects through your pipeline without a sales team touching every enquiry.</p>
-        <span class="worker-tag">Popular with agencies &amp; SaaS</span>
+        <p>Qualifies leads, follows up, moves prospects through pipeline automatically.</p>
       </div>
       <div class="worker-card">
-        <div class="worker-icon">&#9881;</div>
+        <div class="worker-icon">⚙️</div>
         <h3>Operations Worker</h3>
-        <p>Processes documents, extracts data, routes tasks, and generates reports. Replaces hours of manual admin every week.</p>
-        <span class="worker-tag">Popular with law firms &amp; accountants</span>
+        <p>Processes documents, extracts data, routes tasks, generates reports on schedule.</p>
       </div>
       <div class="worker-card">
-        <div class="worker-icon">&#128203;</div>
+        <div class="worker-icon">⚖️</div>
         <h3>Compliance Assistant</h3>
-        <p>Reviews contracts, flags policy violations, and produces audit-ready evidence logs. Built for regulated industries.</p>
-        <span class="worker-tag">Popular with financial services</span>
+        <p>Reviews contracts, flags violations, produces audit-ready evidence for regulators.</p>
       </div>
       <div class="worker-card">
-        <div class="worker-icon">&#128172;</div>
+        <div class="worker-icon">💬</div>
         <h3>Customer Support Agent</h3>
-        <p>Resolves tickets, answers product questions, and escalates to humans only when genuinely needed. Reduces support load by 40%+.</p>
-        <span class="worker-tag">Popular with e-commerce &amp; SaaS</span>
+        <p>Resolves tickets, answers questions, escalates only when human judgment is required.</p>
       </div>
       <div class="worker-card">
-        <div class="worker-icon">&#128218;</div>
+        <div class="worker-icon">🧠</div>
         <h3>Knowledge Worker</h3>
-        <p>Answers internal questions using your own policies, documentation, and data. Onboards new staff. Reduces time-to-answer from hours to seconds.</p>
-        <span class="worker-tag">Popular with enterprise teams</span>
+        <p>Answers internal questions using your data, policies, and documentation — accurately.</p>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- TRACE -->
-<div class="trace-wrap">
-  <div class="section" id="trace">
-    <div class="section-inner">
-      <div class="label label-accent">Powered by Kairos Trace</div>
+<!-- ── POWERED BY TRACE ───────────────────────────────────────────────────── -->
+<section id="trace">
+  <div class="section-inner">
+    <div class="section-header fade-in" style="max-width: 720px;">
+      <div class="section-label">Powered by Kairos Trace</div>
       <h2>Every action. Recorded, replayable, governed.</h2>
-      <p class="section-sub">Trace is not a separate product. It is the infrastructure underneath every AI worker we deploy. Every customer gets full operational visibility from day one.</p>
-      <div class="trace-features">
-        <div class="trace-feat">
-          <div class="trace-num">01 &mdash; Replay</div>
-          <h3>See exactly what happened.</h3>
-          <p>Every tool call, decision, retry, and output is recorded in sequence. Rewind and replay any execution end to end.</p>
-        </div>
-        <div class="trace-feat">
-          <div class="trace-num">02 &mdash; Audit</div>
-          <h3>Immutable evidence trail.</h3>
-          <p>Every agent action generates a tamper-proof audit record. Know what your AI did, when, and why&mdash;for compliance or investigation.</p>
-        </div>
-        <div class="trace-feat">
-          <div class="trace-num">03 &mdash; Control</div>
-          <h3>Human approvals built in.</h3>
-          <p>Set policies that pause agent execution and route to human review. Kill switches, approval gates, and escalation workflows included.</p>
-        </div>
+      <p>Trace is not a separate product. It ships with every AI worker we deploy.</p>
+    </div>
+    <div class="trace-cols fade-in">
+      <div class="trace-col">
+        <div class="trace-num">01</div>
+        <h3>Replay</h3>
+        <p>See the complete execution path. Every tool call, decision, retry, and output — in sequence, with precise timestamps.</p>
+      </div>
+      <div class="trace-col">
+        <div class="trace-num">02</div>
+        <h3>Audit</h3>
+        <p>Immutable evidence trail for every agent action. The documentation required under the EU AI Act — automatically generated.</p>
+      </div>
+      <div class="trace-col">
+        <div class="trace-num">03</div>
+        <h3>Control</h3>
+        <p>Human approvals, kill switches, and escalation workflows built in. Your team stays in command at every step.</p>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- EXAMPLES -->
-<div class="section">
+<!-- ── REAL EXAMPLES ──────────────────────────────────────────────────────── -->
+<section id="examples">
   <div class="section-inner">
-    <div class="label">How it works in practice</div>
-    <h2>The customer buys an outcome.<br>Trace comes with it.</h2>
-    <p class="section-sub">Every deployment includes full Kairos Trace instrumentation. The customer does not need to think about observability&mdash;it is already there.</p>
-    <div class="examples-grid">
+    <div class="section-header fade-in">
+      <h2>The customer buys an outcome.<br>Trace comes with it.</h2>
+    </div>
+    <div class="examples-grid fade-in">
       <div class="example-card">
-        <div class="example-buyer">Law Firm</div>
-        <div class="example-product">Contract Review Agent</div>
-        <ul class="example-gets">
-          <li><span class="dot"></span>Reviews contracts against firm policy automatically</li>
-          <li><span class="dot"></span>Full replay of every clause flagged</li>
-          <li><span class="dot"></span>Audit trail for partner review</li>
-          <li><span class="dot"></span>Human approval before any client communication</li>
+        <div class="example-chip">Law Firm</div>
+        <h3>Contract Review Agent</h3>
+        <div class="example-worker">AI-powered contract analysis</div>
+        <ul class="example-features">
+          <li>Full execution replay per review</li>
+          <li>Immutable audit trail for every clause decision</li>
+          <li>Human approval workflow before delivery</li>
         </ul>
       </div>
       <div class="example-card">
-        <div class="example-buyer">Recruitment Agency</div>
-        <div class="example-product">Candidate Screening Agent</div>
-        <ul class="example-gets">
-          <li><span class="dot"></span>Screens CVs against role criteria 24/7</li>
-          <li><span class="dot"></span>Decision history for every rejection</li>
-          <li><span class="dot"></span>Compliance trail for equal opportunities</li>
-          <li><span class="dot"></span>Shortlist delivered with reasoning</li>
+        <div class="example-chip">Recruitment Agency</div>
+        <h3>Candidate Screening Agent</h3>
+        <div class="example-worker">Automated candidate qualification</div>
+        <ul class="example-features">
+          <li>Decision history for every candidate assessment</li>
+          <li>Compliance trail for equal opportunity requirements</li>
+          <li>Explainable scores, replayable reasoning</li>
         </ul>
       </div>
       <div class="example-card">
-        <div class="example-buyer">Dental Practice</div>
-        <div class="example-product">AI Receptionist</div>
-        <ul class="example-gets">
-          <li><span class="dot"></span>Answers calls and books appointments at 2am</li>
-          <li><span class="dot"></span>Full call transcript and replay</li>
-          <li><span class="dot"></span>Escalation log when human needed</li>
-          <li><span class="dot"></span>Zero missed patient enquiries</li>
+        <div class="example-chip">Dental Practice</div>
+        <h3>AI Receptionist</h3>
+        <div class="example-worker">24/7 inbound call handling</div>
+        <ul class="example-features">
+          <li>Full call transcript and decision log</li>
+          <li>Escalation event tracking and audit</li>
+          <li>Zero missed enquiries — provably</li>
         </ul>
       </div>
       <div class="example-card">
-        <div class="example-buyer">Insurance Company</div>
-        <div class="example-product">Claims Processing Agent</div>
-        <ul class="example-gets">
-          <li><span class="dot"></span>Processes claims against policy documents</li>
-          <li><span class="dot"></span>Replay of every approval decision</li>
-          <li><span class="dot"></span>Governance log for regulator</li>
-          <li><span class="dot"></span>Human escalation for edge cases</li>
+        <div class="example-chip">Insurance Company</div>
+        <h3>Claims Assistant</h3>
+        <div class="example-worker">Automated claims triage and routing</div>
+        <ul class="example-features">
+          <li>Governance log for every claims decision</li>
+          <li>Regulator-ready audit records on demand</li>
+          <li>Human-in-the-loop for high-value claims</li>
         </ul>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ENTERPRISE -->
-<div class="section">
+<!-- ── ENTERPRISE ─────────────────────────────────────────────────────────── -->
+<section id="enterprise">
   <div class="section-inner">
-    <div class="label">Enterprise ready</div>
-    <h2>Built for regulated industries<br>from day one.</h2>
-    <p class="section-sub">Every Kairos deployment meets the operational and compliance requirements of financial services, legal, healthcare, and enterprise IT.</p>
-    <div class="ent-grid">
-      <div class="ent-card">
+    <div class="section-header fade-in">
+      <h2>Built for regulated industries.</h2>
+      <p>The infrastructure layer that lets enterprises deploy AI with confidence — not liability.</p>
+    </div>
+    <div class="enterprise-grid fade-in">
+      <div class="enterprise-card">
+        <div class="enterprise-icon">🇪🇺</div>
         <h3>EU AI Act Readiness</h3>
-        <p>Kairos Trace generates the documentation and audit trails required under the EU AI Act for high-risk AI deployments. Compliance is not an afterthought.</p>
+        <p>Audit trails and documentation required under the EU AI Act. Compliance is built into every deployment — not bolted on after.</p>
       </div>
-      <div class="ent-card">
+      <div class="enterprise-card">
+        <div class="enterprise-icon">🔒</div>
         <h3>Full Audit Trails</h3>
-        <p>Every agent action produces an immutable, timestamped record. Sufficient for regulatory investigation, internal audit, or legal proceedings.</p>
+        <p>Immutable, timestamped records for every agent action. Know exactly what your AI workers did, when, and why.</p>
       </div>
-      <div class="ent-card">
-        <h3>Human-in-the-Loop Controls</h3>
-        <p>Configurable approval gates pause agent execution and route decisions to named humans before proceeding. No fully autonomous actions without sign-off.</p>
+      <div class="enterprise-card">
+        <div class="enterprise-icon">👤</div>
+        <h3>Human-in-the-Loop</h3>
+        <p>Configurable approval gates at every critical decision point. No fully autonomous actions without explicit sign-off.</p>
       </div>
-      <div class="ent-card">
+      <div class="enterprise-card">
+        <div class="enterprise-icon">🛡️</div>
         <h3>Data Isolation</h3>
-        <p>Every deployment runs in an isolated execution environment. Customer data does not cross tenant boundaries. Suitable for confidential and regulated data.</p>
+        <p>Isolated execution environments for every tenant. No cross-tenant data leakage — architecturally enforced.</p>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- PRICING -->
-<div class="section">
+<!-- ── PRICING ────────────────────────────────────────────────────────────── -->
+<section id="pricing">
   <div class="section-inner">
-    <div class="label">Pricing</div>
-    <h2>Start free. Deploy when ready.</h2>
-    <p class="section-sub">Kairos Trace is free for developers and teams building with AI. Deployments are priced per project.</p>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-label">Trace &mdash; Free</div>
-        <div class="price-amount">&pound;0</div>
-        <div class="price-period">forever</div>
-        <ul class="price-list">
-          <li><span class="check">&#10003;</span>500 trace events/month</li>
-          <li><span class="check">&#10003;</span>7-day replay history</li>
-          <li><span class="check">&#10003;</span>1 agent workflow</li>
-          <li><span class="check">&#10003;</span>Python + TypeScript SDK</li>
-          <li><span class="check">&#10003;</span>Community support</li>
+    <div class="section-header fade-in" style="max-width: 480px; margin: 0 auto 64px; text-align: center;">
+      <h2>Start free. Deploy when ready.</h2>
+      <p>Trace is free to start. Deployments are fixed price with no ongoing surprises.</p>
+    </div>
+    <div class="pricing-grid fade-in">
+
+      <div class="pricing-card">
+        <div class="pricing-name">Trace Free</div>
+        <div class="pricing-price">£0<span class="pricing-period">/mo</span></div>
+        <div class="pricing-sub">Forever free. No credit card.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>500 trace events per month</li>
+          <li>7-day replay history</li>
+          <li>1 workflow</li>
+          <li>Python + TypeScript SDK</li>
+          <li>Community support</li>
         </ul>
-        <a href="/app" class="btn-outline" style="text-align:center">Start free</a>
+        <a href="#contact" class="btn-pricing-outline">Get started free</a>
       </div>
-      <div class="price-card featured">
-        <div class="price-label accent">Trace &mdash; Pro</div>
-        <div class="price-amount">&pound;19</div>
-        <div class="price-period">per month</div>
-        <ul class="price-list">
-          <li><span class="check">&#10003;</span>Unlimited trace events</li>
-          <li><span class="check">&#10003;</span>30-day replay history</li>
-          <li><span class="check">&#10003;</span>Unlimited workflows</li>
-          <li><span class="check">&#10003;</span>Shareable replay links</li>
-          <li><span class="check">&#10003;</span>Priority support</li>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most popular</div>
+        <div class="pricing-name">Trace Pro</div>
+        <div class="pricing-price">£19<span class="pricing-period">/mo</span></div>
+        <div class="pricing-sub">For teams building seriously.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Unlimited trace events</li>
+          <li>30-day replay history</li>
+          <li>Unlimited workflows</li>
+          <li>Shareable replay links</li>
+          <li>Priority email support</li>
+          <li>Team access</li>
         </ul>
-        <a href="/pricing" class="btn-primary" style="text-align:center">Get Pro</a>
+        <a href="#contact" class="btn-pricing-primary">Start Pro</a>
       </div>
-      <div class="price-card">
-        <div class="price-label">Kairos Deployment</div>
-        <div class="price-amount">From &pound;500</div>
-        <div class="price-period">per project</div>
-        <ul class="price-list">
-          <li><span class="check">&#10003;</span>Custom AI worker built for you</li>
-          <li><span class="check">&#10003;</span>Kairos Trace included</li>
-          <li><span class="check">&#10003;</span>Deployed in 48 hours</li>
-          <li><span class="check">&#10003;</span>30 days support</li>
-          <li><span class="check">&#10003;</span>Not happy? We fix it free.</li>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Kairos Deployment</div>
+        <div class="pricing-price pricing-from">From £500</div>
+        <div class="pricing-sub">One-time. Your worker, live in 48hrs.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Custom AI worker built for you</li>
+          <li>Trace Pro included</li>
+          <li>48-hour delivery</li>
+          <li>Free fixes for 30 days</li>
+          <li>Dedicated onboarding call</li>
+          <li>Source code handover</li>
         </ul>
-        <a href="#contact" class="btn-outline" style="text-align:center">Book a deployment</a>
+        <a href="#contact" class="btn-pricing-outline">Book a deployment</a>
       </div>
+
     </div>
   </div>
-</div>
+</section>
 
-<!-- CONTACT -->
-<div class="section" id="contact">
+<!-- ── CONTACT ────────────────────────────────────────────────────────────── -->
+<section id="contact">
   <div class="section-inner">
-    <div class="label">Get started</div>
-    <h2>Book a deployment.</h2>
-    <p class="section-sub">Tell us what you need automated. We will scope it and respond the same day.</p>
-    <div class="contact-wrap">
-      <form action="https://formsubmit.co/kylenalamvelil@icloud.com" method="POST">
-        <input type="hidden" name="_subject" value="New Kairos deployment enquiry" />
+    <div class="contact-inner fade-in">
+      <div class="section-label">Get in touch</div>
+      <h2 style="font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 14px;">Deploy your first AI worker.</h2>
+      <p style="font-size: 17px; color: var(--muted); line-height: 1.72;">Tell us what you need automated. We respond same day.</p>
+      <form class="contact-form" action="https://formsubmit.co/kylenalamvelil@icloud.com" method="POST">
+        <input type="hidden" name="_subject" value="Kairos enquiry" />
         <input type="hidden" name="_next" value="https://withkairos.dev" />
+        <input type="hidden" name="_captcha" value="false" />
         <div class="form-row">
-          <div class="form-field">
+          <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" required placeholder="Your name" />
+            <input type="text" id="name" name="name" placeholder="Alex Carter" required />
           </div>
-          <div class="form-field">
-            <label for="company">Company</label>
-            <input type="text" id="company" name="company" placeholder="Company (optional)" />
+          <div class="form-group">
+            <label for="company">Company <span style="color: var(--muted); font-weight: 400;">(optional)</span></label>
+            <input type="text" id="company" name="company" placeholder="Acme Ltd" />
           </div>
         </div>
-        <div class="form-field">
+        <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" required placeholder="your@email.com" />
+          <input type="email" id="email" name="email" placeholder="alex@acme.com" required />
         </div>
-        <div class="form-field">
-          <label for="message">What do you need?</label>
-          <textarea id="message" name="message" required placeholder="Describe what you want to automate or deploy..."></textarea>
+        <div class="form-group">
+          <label for="message">What do you need automated?</label>
+          <textarea id="message" name="message" rows="5" placeholder="We receive 200 calls a week and need an AI receptionist that can book appointments and answer FAQs..." required></textarea>
         </div>
-        <div class="form-submit">
-          <button type="submit" class="btn-primary">Send enquiry</button>
-        </div>
+        <button type="submit" class="btn-submit">Send enquiry &rarr;</button>
       </form>
-      <p style="margin-top:24px;font-size:13px;color:var(--muted)">Or email directly: kylenalamvelil@icloud.com</p>
     </div>
   </div>
-</div>
+</section>
 
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-left">
-      <strong>KAIROS</strong>
-      <span>Deploy AI workers you can trust.</span>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Kairos</div>
+      <div class="footer-tagline">Deploy AI workers you can trust.</div>
     </div>
     <div class="footer-links">
-      <a href="/app">Trace</a>
-      <a href="/docs">Docs</a>
-      <a href="https://github.com/withkairos" target="_blank">GitHub</a>
+      <a href="#workers">AI Workers</a>
+      <a href="#trace">Trace</a>
+      <a href="#contact">Docs</a>
+      <a href="https://github.com/withkairos" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
-  <div style="max-width:var(--max);margin:24px auto 0;padding:0 24px;border-top:1px solid var(--border);padding-top:24px;">
-    <p style="font-size:12px;color:var(--muted)">&copy; 2026 Kairos Technologies Ltd. &mdash; withkairos.dev</p>
+  <div class="footer-bottom">
+    &copy; 2026 Kairos Technologies Ltd. All rights reserved.
   </div>
 </footer>
 
 <script>
+  // Nav frosted glass on scroll
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 10);
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+  }, { passive: true });
+
+  // Scroll fade-in
+  const fadeObserver = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObserver.unobserve(e.target); } }),
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+  // Replay timeline re-trigger on scroll into view
+  const demoCard = document.getElementById('demo-card');
+  let replayed = false;
+  const replayObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !replayed) {
+        replayed = true;
+        const events = document.querySelectorAll('#timeline-events .timeline-event');
+        events.forEach(ev => {
+          ev.style.animation = 'none';
+          void ev.offsetHeight;
+          ev.style.animation = '';
+        });
+      }
+    });
+  }, { threshold: 0.35 });
+  if (demoCard) replayObserver.observe(demoCard);
+
+  // Smooth scroll with nav offset
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    });
   });
 </script>
 </body>
