@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd kairos-web && npm install && npm run build",
+  "outputDirectory": "kairos-web/.next",
+  "installCommand": "cd kairos-web && npm install",
+  "framework": "nextjs"
+}
