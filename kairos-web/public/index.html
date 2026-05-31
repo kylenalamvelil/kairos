@@ -4,26 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kairos — Execution Replay for AI Agents</title>
-  <meta name="description" content="Kairos records every tool call, retry, and decision your agents make. When something goes wrong — and it will — you can see exactly why." />
+  <meta name="description" content="Kairos records every decision, tool call, and failure your AI agents make — and lets you replay it. So when something goes wrong, you know exactly why." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #050606;
-      --text:        #f6f7f4;
-      --mint:        #9cffc7;
-      --muted:       #6b7280;
-      --surface:     #0d0f0e;
-      --surface-2:   #131614;
-      --border:      #1c1f1e;
-      --border-2:    #252926;
-      --mono:        'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
-      --red:         #ef4444;
-      --yellow:      #fbbf24;
-      --green:       #4ade80;
+      --bg:        #050606;
+      --text:      #f6f7f4;
+      --mint:      #9cffc7;
+      --muted:     #5a6270;
+      --muted-2:   #3d444d;
+      --surface:   #0a0c0b;
+      --surface-2: #0f1210;
+      --border:    #161a18;
+      --border-2:  #1e2421;
+      --mono:      'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --red:       #ef4444;
+      --yellow:    #f59e0b;
+      --green:     #4ade80;
     }
 
     html { scroll-behavior: smooth; }
@@ -38,47 +39,46 @@
       overflow-x: hidden;
     }
 
-    /* ─── NAV ───────────────────────────────────────────────────────────── */
+    /* ─── NAV ─────────────────────────────────────────────────────────── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
       padding: 0 48px;
-      height: 64px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.3s, border-color 0.3s;
       border-bottom: 1px solid transparent;
+      transition: background 0.4s, border-color 0.4s;
     }
     nav.scrolled {
-      background: rgba(5,6,6,0.8);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(5,6,6,0.88);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
       border-color: var(--border);
     }
     .nav-logo {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text);
       text-decoration: none;
     }
-    .nav-center {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 36px;
     }
-    .nav-center a {
+    .nav-links a {
       color: var(--muted);
       text-decoration: none;
       font-size: 14px;
       font-weight: 400;
-      transition: color 0.2s;
+      transition: color 0.18s;
     }
-    .nav-center a:hover { color: var(--text); }
-    .nav-right { display: flex; align-items: center; }
+    .nav-links a:hover { color: var(--text); }
     .btn-nav {
       background: var(--mint);
       color: #050606;
@@ -87,9 +87,10 @@
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.2s;
+      letter-spacing: 0.01em;
+      transition: opacity 0.2s, transform 0.15s;
     }
-    .btn-nav:hover { opacity: 0.85; }
+    .btn-nav:hover { opacity: 0.85; transform: translateY(-1px); }
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -107,183 +108,133 @@
       transition: 0.25s;
     }
 
-    /* ─── HERO ──────────────────────────────────────────────────────────── */
+    /* ─── HERO ────────────────────────────────────────────────────────── */
     #hero {
+      position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 128px 24px 88px;
-      position: relative;
+      padding: 140px 24px 100px;
       overflow: hidden;
     }
-    #hero::before {
-      content: '';
+    #particle-canvas {
       position: absolute;
-      top: -10%; left: 50%;
-      transform: translateX(-50%);
-      width: 1100px; height: 900px;
-      background: radial-gradient(ellipse at center, rgba(156,255,199,0.065) 0%, transparent 65%);
-      pointer-events: none;
+      inset: 0;
       z-index: 0;
+      opacity: 1;
     }
-    #hero > * { position: relative; z-index: 1; }
+    .hero-glow {
+      position: absolute;
+      top: -5%; left: 50%;
+      transform: translateX(-50%);
+      width: 1200px; height: 700px;
+      background: radial-gradient(ellipse at 50% 30%, rgba(156,255,199,0.055) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    #hero > *:not(#particle-canvas):not(.hero-glow) { position: relative; z-index: 2; }
 
-    .hero-badge {
+    .hero-label {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(156,255,199,0.06);
-      border: 1px solid rgba(156,255,199,0.24);
+      gap: 9px;
+      background: rgba(156,255,199,0.05);
+      border: 1px solid rgba(156,255,199,0.2);
       border-radius: 100px;
       padding: 6px 18px 6px 14px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 500;
       color: var(--mint);
-      margin-bottom: 44px;
-      letter-spacing: 0.01em;
+      margin-bottom: 52px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
     }
-    .badge-dot {
-      width: 7px; height: 7px;
+    .label-dot {
+      width: 6px; height: 6px;
       background: var(--mint);
       border-radius: 50%;
       flex-shrink: 0;
-      animation: badge-pulse 2s ease-in-out infinite;
+      animation: pulse-dot 2.2s ease-in-out infinite;
     }
-    @keyframes badge-pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(156,255,199,0.45); }
-      50%       { opacity: 0.55; box-shadow: 0 0 0 5px rgba(156,255,199,0); }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(156,255,199,0.5); }
+      50%       { opacity: 0.6; box-shadow: 0 0 0 6px rgba(156,255,199,0); }
     }
 
-    h1.hero-headline {
-      font-size: clamp(38px, 5.8vw, 68px);
+    h1.hero-h1 {
+      font-size: clamp(42px, 6.5vw, 80px);
       font-weight: 800;
-      letter-spacing: -0.035em;
-      line-height: 1.05;
-      max-width: 920px;
-      margin-bottom: 28px;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      max-width: 960px;
+      margin-bottom: 32px;
     }
-    .hero-headline .dim { color: var(--muted); }
+    .hero-h1 .mint { color: var(--mint); }
 
     .hero-sub {
-      font-size: clamp(16px, 1.7vw, 18px);
+      font-size: clamp(16px, 1.8vw, 19px);
       color: var(--muted);
       max-width: 560px;
-      line-height: 1.78;
-      margin-bottom: 48px;
+      line-height: 1.75;
+      margin-bottom: 52px;
     }
+
     .hero-ctas {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 64px;
     }
     .btn-primary {
       background: var(--text);
       color: #050606;
-      padding: 13px 26px;
+      padding: 14px 28px;
       border-radius: 8px;
       font-size: 15px;
       font-weight: 600;
       text-decoration: none;
-      display: inline-block;
       transition: opacity 0.2s, transform 0.15s;
+      display: inline-block;
     }
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      padding: 13px 26px;
+    .btn-code {
+      background: var(--surface-2);
+      color: var(--mint);
+      padding: 14px 24px;
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
+      font-family: var(--mono);
       text-decoration: none;
       border: 1px solid var(--border-2);
       display: inline-block;
-      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      letter-spacing: 0.03em;
+      transition: border-color 0.2s, transform 0.15s;
     }
-    .btn-outline:hover { border-color: rgba(156,255,199,0.4); color: var(--mint); transform: translateY(-1px); }
+    .btn-code:hover { border-color: rgba(156,255,199,0.3); transform: translateY(-1px); }
 
-    .hero-divider {
-      width: 100%;
-      max-width: 560px;
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 40px;
-    }
-    .hero-stats {
-      display: flex;
-      gap: 52px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .hero-stat {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .hero-stat::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      background: var(--mint);
-      border-radius: 50%;
-      opacity: 0.7;
-    }
-
-    /* ─── SECTION UTILITIES ─────────────────────────────────────────────── */
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--mint);
-      margin-bottom: 20px;
-    }
-    .section-wrap {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 100px 48px;
-    }
-    .section-h2 {
-      font-size: clamp(26px, 3.5vw, 40px);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.15;
-      margin-bottom: 16px;
-    }
-    .section-sub {
-      font-size: 17px;
-      color: var(--muted);
-      line-height: 1.72;
-      max-width: 520px;
-      margin-bottom: 64px;
-    }
-
-    /* ─── DEMO ──────────────────────────────────────────────────────────── */
+    /* ─── DEMO ────────────────────────────────────────────────────────── */
     #demo {
-      padding: 80px 24px 100px;
-      border-top: 1px solid var(--border);
+      padding: 0 24px 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .demo-card {
       width: 100%;
-      max-width: 980px;
+      max-width: 1020px;
       background: var(--surface);
-      border: 1px solid rgba(156,255,199,0.25);
-      border-radius: 12px;
+      border: 1px solid rgba(156,255,199,0.18);
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 0 90px rgba(156,255,199,0.055), 0 40px 100px rgba(0,0,0,0.55);
-      margin-bottom: 24px;
+      box-shadow:
+        0 0 0 1px rgba(156,255,199,0.05),
+        0 0 80px rgba(156,255,199,0.06),
+        0 60px 120px rgba(0,0,0,0.7);
+      margin-bottom: 28px;
     }
     .demo-card-header {
       padding: 14px 20px;
@@ -291,13 +242,13 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      background: rgba(0,0,0,0.22);
+      background: rgba(0,0,0,0.3);
     }
-    .demo-dots { display: flex; gap: 6px; }
-    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .demo-dot.red    { background: #ff5f57; }
-    .demo-dot.yellow { background: #ffbd2e; }
-    .demo-dot.green  { background: #28c840; }
+    .demo-dots { display: flex; gap: 7px; }
+    .demo-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .demo-dot.r { background: #ff5f57; }
+    .demo-dot.y { background: #ffbd2e; }
+    .demo-dot.g { background: #28c840; }
     .demo-title {
       font-size: 12px;
       font-weight: 500;
@@ -308,31 +259,31 @@
     .demo-title .hl { color: var(--mint); }
 
     .demo-cols { display: grid; grid-template-columns: 1fr 1fr; }
-    .demo-col { padding: 24px 26px; }
+    .demo-col { padding: 28px; }
     .demo-col:first-child { border-right: 1px solid var(--border); }
     .demo-col-label {
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-      padding-bottom: 12px;
+      color: var(--muted-2);
+      margin-bottom: 20px;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--border);
     }
 
-    /* Typing */
-    .agent-response-text {
-      font-size: 13.5px;
+    /* Agent output */
+    .agent-output-text {
+      font-size: 13px;
       color: var(--text);
-      line-height: 1.7;
-      min-height: 48px;
+      line-height: 1.75;
+      min-height: 52px;
       font-family: var(--mono);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .cursor {
       display: inline-block;
-      width: 2px; height: 14px;
+      width: 2px; height: 13px;
       background: var(--mint);
       margin-left: 2px;
       vertical-align: middle;
@@ -340,40 +291,41 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-    .agent-note {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.65;
-      margin-bottom: 16px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    .agent-note.visible { opacity: 1; }
-
-    .agent-badge {
+    .unsafe-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.28);
+      gap: 7px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
       border-radius: 5px;
-      padding: 6px 13px;
+      padding: 7px 14px;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--red);
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.5s ease;
+      margin-bottom: 10px;
     }
-    .agent-badge.visible { opacity: 1; }
-    .agent-badge::before {
-      content: '';
+    .unsafe-badge.show { opacity: 1; animation: badge-pulse-anim 2s ease-in-out infinite; }
+    @keyframes badge-pulse-anim {
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+      50%      { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+    }
+    .unsafe-badge-dot {
       width: 5px; height: 5px;
       background: var(--red);
       border-radius: 50%;
-      animation: badge-pulse 1.4s ease-in-out infinite;
     }
+    .agent-wrong {
+      font-size: 11.5px;
+      color: var(--red);
+      font-family: var(--mono);
+      opacity: 0;
+      transition: opacity 0.4s 0.2s ease;
+    }
+    .agent-wrong.show { opacity: 1; }
 
     /* Trace */
     .trace-events { display: flex; flex-direction: column; }
@@ -382,20 +334,20 @@
       align-items: flex-start;
       gap: 10px;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(28,31,30,0.5);
+      border-bottom: 1px solid rgba(22,26,24,0.7);
       opacity: 0;
-      transform: translateY(5px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(6px);
+      transition: opacity 0.32s ease, transform 0.32s ease;
     }
     .trace-event:last-child { border-bottom: none; }
     .trace-event.show { opacity: 1; transform: translateY(0); }
     .trace-time {
       font-size: 11px;
-      color: var(--muted);
+      color: var(--muted-2);
       font-family: var(--mono);
       min-width: 40px;
       flex-shrink: 0;
-      padding-top: 2px;
+      padding-top: 1px;
     }
     .trace-dot {
       width: 7px; height: 7px;
@@ -403,50 +355,51 @@
       flex-shrink: 0;
       margin-top: 4px;
     }
-    .trace-dot.ok   { background: var(--green);  box-shadow: 0 0 4px rgba(74,222,128,0.5); }
-    .trace-dot.warn { background: var(--yellow); box-shadow: 0 0 4px rgba(251,191,36,0.5); }
-    .trace-dot.risk { background: var(--red);    box-shadow: 0 0 4px rgba(239,68,68,0.5); }
-    .trace-dot.risk.pulse { animation: risk-pulse 1.2s ease-in-out infinite; }
+    .trace-dot.ok   { background: var(--green); box-shadow: 0 0 5px rgba(74,222,128,0.5); }
+    .trace-dot.warn { background: var(--yellow); box-shadow: 0 0 5px rgba(245,158,11,0.5); }
+    .trace-dot.risk { background: var(--red); box-shadow: 0 0 5px rgba(239,68,68,0.6); }
+    .trace-dot.risk.pulse { animation: risk-pulse 1.4s ease-in-out infinite; }
     @keyframes risk-pulse {
-      0%,100% { box-shadow: 0 0 4px rgba(239,68,68,0.5); }
-      50%      { box-shadow: 0 0 12px rgba(239,68,68,0.9); }
+      0%,100% { box-shadow: 0 0 5px rgba(239,68,68,0.6); }
+      50%      { box-shadow: 0 0 14px rgba(239,68,68,1); }
     }
-    .trace-text {
+    .trace-label {
       font-size: 12px;
       font-family: var(--mono);
       color: var(--text);
       line-height: 1.5;
       flex: 1;
     }
-    .trace-text .ok   { color: var(--green); }
-    .trace-text .warn { color: var(--yellow); }
-    .trace-text .risk { color: var(--red); }
-    .trace-text .dim  { color: var(--muted); }
+    .trace-label .ok   { color: var(--green); }
+    .trace-label .warn { color: var(--yellow); }
+    .trace-label .risk { color: var(--red); }
+    .trace-label .dim  { color: var(--muted-2); }
 
     .demo-status-bar {
-      padding: 13px 24px;
-      background: rgba(239,68,68,0.05);
-      border-top: 1px solid rgba(239,68,68,0.15);
+      padding: 13px 26px;
+      background: rgba(239,68,68,0.04);
+      border-top: 1px solid rgba(239,68,68,0.12);
       display: flex;
-      gap: 24px;
+      gap: 28px;
       flex-wrap: wrap;
+      align-items: center;
     }
-    .status-item {
-      font-size: 12px;
+    .status-pill {
+      font-size: 11.5px;
       font-family: var(--mono);
       color: var(--muted);
     }
-    .status-item .v { font-weight: 700; }
-    .v-unsafe { color: var(--red); }
-    .v-warn   { color: var(--yellow); }
-    .v-ok     { color: var(--mint); }
+    .status-pill .v { font-weight: 700; }
+    .v-red    { color: var(--red); }
+    .v-yellow { color: var(--yellow); }
+    .v-mint   { color: var(--mint); }
 
     .demo-replay-btn {
       background: transparent;
       color: var(--mint);
-      border: 1px solid rgba(156,255,199,0.25);
+      border: 1px solid rgba(156,255,199,0.2);
       border-radius: 6px;
-      padding: 8px 22px;
+      padding: 9px 22px;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
@@ -455,83 +408,105 @@
       letter-spacing: 0.02em;
       margin-bottom: 36px;
     }
-    .demo-replay-btn:hover { background: rgba(156,255,199,0.06); border-color: rgba(156,255,199,0.45); }
+    .demo-replay-btn:hover { background: rgba(156,255,199,0.05); border-color: rgba(156,255,199,0.4); }
 
     .demo-insight {
-      max-width: 600px;
+      max-width: 640px;
       text-align: center;
       font-size: 15px;
       color: var(--mint);
-      line-height: 1.72;
+      line-height: 1.75;
       font-style: italic;
+      opacity: 0.8;
     }
 
-    /* ─── HOW IT WORKS ──────────────────────────────────────────────────── */
-    #how { border-top: 1px solid var(--border); }
-
-    .how-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+    /* ─── SECTION UTILS ───────────────────────────────────────────────── */
+    .section-wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 110px 48px;
     }
-    .how-card {
-      background: var(--surface);
-      padding: 36px 30px;
-      transition: background 0.2s;
-    }
-    .how-card:hover { background: var(--surface-2); }
-    .how-icon {
-      width: 40px; height: 40px;
-      border-radius: 8px;
-      background: rgba(156,255,199,0.07);
-      border: 1px solid rgba(156,255,199,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mint);
       margin-bottom: 20px;
     }
-    .how-icon svg {
-      width: 18px; height: 18px;
-      stroke: var(--mint);
-      fill: none;
-      stroke-width: 1.7;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .section-h2 {
+      font-size: clamp(28px, 3.8vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.028em;
+      line-height: 1.12;
+      margin-bottom: 16px;
     }
-    .how-card h3 {
-      font-size: 16px;
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.72;
+      max-width: 520px;
+      margin-bottom: 64px;
+    }
+
+    /* ─── HOW IT WORKS ────────────────────────────────────────────────── */
+    #how { border-top: 1px solid var(--border); }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .how-step {
+      padding: 44px 36px;
+      position: relative;
+      background: var(--surface);
+      transition: background 0.2s;
+    }
+    .how-step:not(:last-child) { border-right: 1px solid var(--border); }
+    .how-step:hover { background: var(--surface-2); }
+    .how-num {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--mint);
+      line-height: 1;
+      margin-bottom: 24px;
+      opacity: 0.85;
+    }
+    .how-step h3 {
+      font-size: 18px;
       font-weight: 600;
-      letter-spacing: -0.01em;
-      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
     }
-    .how-card > p {
+    .how-step p {
       font-size: 14px;
       color: var(--muted);
       line-height: 1.72;
-      margin-bottom: 22px;
+      margin-bottom: 28px;
     }
     .how-code {
-      background: rgba(0,0,0,0.42);
+      background: rgba(0,0,0,0.5);
       border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 14px 16px;
-      font-size: 11.5px;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-size: 12px;
       font-family: var(--mono);
       color: var(--muted);
-      line-height: 1.85;
+      line-height: 1.9;
       white-space: pre;
       overflow-x: auto;
     }
-    .kw  { color: #c792ea; }
-    .fn  { color: #82aaff; }
-    .st  { color: var(--mint); }
-    .cm  { color: #4b6179; }
+    .kw { color: #c792ea; }
+    .fn { color: #82aaff; }
+    .st { color: var(--mint); }
+    .cm { color: var(--muted-2); }
 
-    /* ─── FAILURES ──────────────────────────────────────────────────────── */
+    /* ─── FAILURES ────────────────────────────────────────────────────── */
     #failures {
       border-top: 1px solid var(--border);
       background: var(--surface);
@@ -540,89 +515,39 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
+      margin-bottom: 48px;
     }
     .failure-card {
       background: var(--bg);
       border: 1px solid var(--border);
+      border-left: 3px solid rgba(156,255,199,0.4);
       border-radius: 10px;
       padding: 32px;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      transition: border-left-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
     .failure-card:hover {
-      border-color: var(--border-2);
+      border-left-color: var(--mint);
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.45);
     }
-    .failure-tag {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--red);
-      background: rgba(239,68,68,0.07);
-      border: 1px solid rgba(239,68,68,0.2);
-      border-radius: 4px;
-      padding: 3px 9px;
-      margin-bottom: 16px;
+    .failure-story {
+      font-size: 14.5px;
+      color: var(--text);
+      line-height: 1.78;
+      opacity: 0.75;
     }
-    .failure-quote {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.72;
-      margin-bottom: 8px;
-      font-style: italic;
-      border-left: 2px solid var(--border-2);
-      padding-left: 14px;
+    .failures-close {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
     }
-    .failure-follow {
-      font-size: 13px;
-      color: var(--red);
-      font-weight: 500;
-      margin-bottom: 24px;
-      padding-left: 16px;
-    }
-    .mini-trace {
-      border-top: 1px solid var(--border);
-      padding-top: 18px;
-    }
-    .mini-trace-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--mint);
-      margin-bottom: 10px;
-    }
-    .mini-event {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 0;
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--muted);
-    }
-    .mini-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .mini-dot.ok   { background: var(--green); }
-    .mini-dot.warn { background: var(--yellow); }
-    .mini-dot.risk { background: var(--red); }
 
-    /* ─── PRICING ───────────────────────────────────────────────────────── */
+    /* ─── PRICING ─────────────────────────────────────────────────────── */
     #pricing { border-top: 1px solid var(--border); }
     .pricing-header {
-      text-align: center;
       margin-bottom: 64px;
-    }
-    .pricing-header h2 { max-width: 100%; }
-    .pricing-header p {
-      font-size: 17px;
-      color: var(--muted);
-      margin-top: 12px;
     }
     .pricing-grid {
       display: grid;
@@ -640,12 +565,12 @@
     }
     .pricing-card:hover { border-color: var(--border-2); }
     .pricing-card.featured {
-      border-color: var(--mint);
-      background: rgba(156,255,199,0.016);
-      box-shadow: 0 0 50px rgba(156,255,199,0.045);
+      border-color: rgba(156,255,199,0.35);
+      background: rgba(156,255,199,0.012);
+      box-shadow: 0 0 60px rgba(156,255,199,0.04);
     }
-    .pricing-card.featured:hover { border-color: var(--mint); }
-    .pricing-badge {
+    .pricing-card.featured:hover { border-color: rgba(156,255,199,0.5); }
+    .featured-badge {
       position: absolute;
       top: -12px; left: 50%;
       transform: translateX(-50%);
@@ -653,32 +578,32 @@
       color: #050606;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 4px 14px;
       border-radius: 100px;
       white-space: nowrap;
     }
-    .pricing-name {
+    .pricing-tier {
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .pricing-card.featured .pricing-name { color: var(--mint); }
+    .pricing-card.featured .pricing-tier { color: var(--mint); }
     .pricing-price {
-      font-size: 40px;
+      font-size: 44px;
       font-weight: 800;
-      letter-spacing: -0.035em;
+      letter-spacing: -0.04em;
       line-height: 1;
       margin-bottom: 4px;
     }
     .pricing-period { font-size: 15px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
-    .pricing-talk { font-size: 26px; letter-spacing: -0.02em; }
-    .pricing-sub { font-size: 13px; color: var(--muted); margin: 8px 0 28px; }
-    .pricing-divider { height: 1px; background: var(--border); margin-bottom: 26px; }
+    .pricing-talk { font-size: 28px; }
+    .pricing-desc { font-size: 13px; color: var(--muted); margin: 10px 0 28px; line-height: 1.5; }
+    .pricing-line { height: 1px; background: var(--border); margin-bottom: 26px; }
     .pricing-features {
       list-style: none;
       display: flex;
@@ -698,11 +623,11 @@
       content: '✓';
       color: var(--mint);
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 2px;
       flex-shrink: 0;
     }
-    .btn-pricing-primary {
+    .btn-p-mint {
       display: block;
       width: 100%;
       text-align: center;
@@ -715,8 +640,8 @@
       text-decoration: none;
       transition: opacity 0.2s, transform 0.15s;
     }
-    .btn-pricing-primary:hover { opacity: 0.87; transform: translateY(-1px); }
-    .btn-pricing-outline {
+    .btn-p-mint:hover { opacity: 0.87; transform: translateY(-1px); }
+    .btn-p-outline {
       display: block;
       width: 100%;
       text-align: center;
@@ -730,9 +655,9 @@
       border: 1px solid var(--border-2);
       transition: border-color 0.2s, transform 0.15s;
     }
-    .btn-pricing-outline:hover { border-color: rgba(156,255,199,0.35); transform: translateY(-1px); }
+    .btn-p-outline:hover { border-color: rgba(156,255,199,0.35); transform: translateY(-1px); }
 
-    /* ─── CTA ───────────────────────────────────────────────────────────── */
+    /* ─── CLOSING CTA ─────────────────────────────────────────────────── */
     #cta {
       border-top: 1px solid var(--border);
       position: relative;
@@ -743,343 +668,303 @@
       position: absolute;
       top: 0; left: 50%;
       transform: translateX(-50%);
-      width: 900px; height: 480px;
-      background: radial-gradient(ellipse at top, rgba(156,255,199,0.06) 0%, transparent 65%);
+      width: 1000px; height: 500px;
+      background: radial-gradient(ellipse at top, rgba(156,255,199,0.055) 0%, transparent 60%);
       pointer-events: none;
     }
     .cta-inner {
-      max-width: 620px;
+      max-width: 640px;
       margin: 0 auto;
       text-align: center;
-      padding: 100px 24px;
+      padding: 110px 24px;
       position: relative;
       z-index: 1;
     }
     .cta-inner h2 {
-      font-size: clamp(28px, 3.8vw, 46px);
+      font-size: clamp(30px, 4.2vw, 52px);
       font-weight: 800;
-      letter-spacing: -0.032em;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-    .cta-inner p {
-      font-size: 17px;
-      color: var(--muted);
-      line-height: 1.72;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
       margin-bottom: 36px;
     }
-    .cta-code {
+    .cta-code-block {
       display: inline-flex;
       align-items: center;
       gap: 12px;
       background: var(--surface);
       border: 1px solid var(--border-2);
-      border-radius: 8px;
-      padding: 14px 22px;
+      border-radius: 9px;
+      padding: 16px 26px;
       font-family: var(--mono);
       font-size: 14px;
       color: var(--mint);
       margin-bottom: 36px;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.035em;
       user-select: all;
+      cursor: text;
     }
-    .cta-code .prompt { color: var(--muted); }
-    .cta-ctas {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-cta-primary {
+    .cta-code-block .prompt { color: var(--muted-2); }
+    .btn-cta {
       background: var(--mint);
       color: #050606;
-      padding: 14px 28px;
+      padding: 15px 32px;
       border-radius: 8px;
       font-size: 15px;
       font-weight: 600;
       text-decoration: none;
+      display: inline-block;
       transition: opacity 0.2s, transform 0.15s;
     }
-    .btn-cta-primary:hover { opacity: 0.87; transform: translateY(-1px); }
-    .btn-cta-outline {
-      background: transparent;
-      color: var(--text);
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px solid var(--border-2);
-      transition: border-color 0.2s, color 0.2s, transform 0.15s;
-    }
-    .btn-cta-outline:hover { border-color: rgba(156,255,199,0.4); color: var(--mint); transform: translateY(-1px); }
+    .btn-cta:hover { opacity: 0.87; transform: translateY(-1px); }
 
-    /* ─── FOOTER ────────────────────────────────────────────────────────── */
+    /* ─── FOOTER ──────────────────────────────────────────────────────── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 56px 48px 36px;
+      padding: 32px 48px;
     }
-    .footer-inner { max-width: 1160px; margin: 0 auto; }
-    .footer-top {
+    .footer-inner {
+      max-width: 1160px;
+      margin: 0 auto;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 44px;
+      gap: 24px;
       flex-wrap: wrap;
-      gap: 36px;
     }
-    .footer-logo {
+    .footer-left {
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--text);
-      margin-bottom: 8px;
     }
-    .footer-tagline { font-size: 13px; color: var(--muted); }
-    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
-    .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text); }
-    .footer-bottom {
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
+    .footer-center {
+      font-size: 13px;
       color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
     }
+    .footer-center a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-center a:hover { color: var(--text); }
+    .footer-right { font-size: 12px; color: var(--muted-2); }
 
-    /* ─── FADE IN ───────────────────────────────────────────────────────── */
+    /* ─── FADE-IN ─────────────────────────────────────────────────────── */
     .fade-in {
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
     .fade-in.visible { opacity: 1; transform: none; }
 
-    /* ─── RESPONSIVE ────────────────────────────────────────────────────── */
-    @media (max-width: 960px) {
-      .section-wrap { padding: 80px 32px; }
-      .failures-grid { grid-template-columns: 1fr; }
+    /* ─── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .section-wrap { padding: 90px 36px; }
     }
     @media (max-width: 860px) {
+      .how-steps { grid-template-columns: 1fr; }
+      .how-step:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+      .failures-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
       .demo-cols { grid-template-columns: 1fr; }
       .demo-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
-      .how-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
-      .nav-center { display: none; }
-      .nav-center.open {
+      .nav-links { display: none; }
+      .nav-links.open {
         display: flex;
         flex-direction: column;
         position: fixed;
         inset: 0;
-        top: 64px;
+        top: 60px;
         background: rgba(5,6,6,0.97);
         align-items: center;
         justify-content: center;
         gap: 28px;
-        z-index: 99;
+        z-index: 199;
       }
-      .nav-center.open a { font-size: 18px; }
-      .nav-right { display: none; }
+      .nav-links.open a { font-size: 18px; }
+      .nav-links.open .btn-nav { font-size: 16px; padding: 12px 28px; }
       .nav-hamburger { display: flex; }
-      h1.hero-headline { font-size: 36px; }
-      .hero-stats { gap: 24px; }
+      h1.hero-h1 { font-size: 38px; }
       .section-wrap { padding: 72px 20px; }
-      footer { padding: 44px 20px 28px; }
-      .footer-top { flex-direction: column; gap: 24px; }
-      .footer-bottom { flex-direction: column; gap: 4px; }
+      footer { padding: 28px 20px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      #particle-canvas { display: none; }
     }
     @media (max-width: 480px) {
-      .hero-stats { gap: 16px; flex-direction: column; align-items: center; }
-      .demo-status-bar { gap: 12px; }
-      .status-item { font-size: 11px; }
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .demo-status-bar { gap: 14px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ─── NAV ──────────────────────────────────────────────────────────────── -->
+<!-- NAV -->
 <nav id="nav">
   <a class="nav-logo" href="#">Kairos</a>
-  <div class="nav-center" id="navCenter">
-    <a href="#how">How it works</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#how">Product</a>
+    <a href="/docs">Docs</a>
     <a href="#pricing">Pricing</a>
-    <a href="/docs" id="docs">Docs</a>
     <a href="https://github.com/withkairos" target="_blank" rel="noopener noreferrer">GitHub</a>
-  </div>
-  <div class="nav-right">
-    <a href="/app" class="btn-nav">Start free</a>
+    <a href="/app" class="btn-nav">Start tracing</a>
   </div>
   <button class="nav-hamburger" id="hamburger" aria-label="Menu" onclick="toggleNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- ─── HERO ─────────────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section id="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Now in private beta
-  </div>
-  <h1 class="hero-headline">
-    Your AI agent said<br>
-    everything worked.<br>
-    <span class="dim">The replay showed otherwise.</span>
+  <canvas id="particle-canvas"></canvas>
+  <div class="hero-glow"></div>
+
+  <span class="hero-label">
+    <span class="label-dot"></span>
+    Execution replay for AI agents
+  </span>
+
+  <h1 class="hero-h1">
+    You'll never know<br>
+    what your agent did.<br>
+    <span class="mint">Until it's too late.</span>
   </h1>
+
   <p class="hero-sub">
-    Kairos records every tool call, retry, and decision your agents make.
-    When something goes wrong &mdash; and it will &mdash; you can see exactly why.
+    Kairos records every decision, tool call, and failure your AI agents make — and lets you replay it. So when something goes wrong, you know exactly why.
   </p>
+
   <div class="hero-ctas">
-    <a href="#demo" class="btn-primary">See the replay &rarr;</a>
-    <a href="/app" class="btn-outline">Start tracing free</a>
-  </div>
-  <div class="hero-divider"></div>
-  <div class="hero-stats">
-    <span class="hero-stat">EU AI Act compliant</span>
-    <span class="hero-stat">48hr to instrument</span>
-    <span class="hero-stat">100% of events recorded</span>
+    <a href="#demo" class="btn-primary">See a replay &rarr;</a>
+    <a href="/app" class="btn-code">pip install kairos-trace</a>
   </div>
 </section>
 
-<!-- ─── LIVE EXECUTION REPLAY DEMO ───────────────────────────────────────── -->
+<!-- DEMO -->
 <section id="demo">
-  <div class="section-label">Live Execution Replay</div>
-
   <div class="demo-card" id="demo-card">
     <div class="demo-card-header">
       <div class="demo-dots">
-        <div class="demo-dot red"></div>
-        <div class="demo-dot yellow"></div>
-        <div class="demo-dot green"></div>
+        <div class="demo-dot r"></div>
+        <div class="demo-dot y"></div>
+        <div class="demo-dot g"></div>
       </div>
-      <div class="demo-title"><span class="hl">agent</span>.review_contract &mdash; run #4417</div>
+      <div class="demo-title">
+        <span class="hl">agent</span>.contract_review &mdash; production &mdash; run #4,417
+      </div>
     </div>
 
     <div class="demo-cols">
-      <!-- LEFT: What the agent returned -->
       <div class="demo-col">
-        <div class="demo-col-label">What the agent returned</div>
-        <div class="agent-response-text" id="agent-response-text"><span class="cursor"></span></div>
-        <p class="agent-note" id="agent-note">Agent returned high-confidence answer after context loss. Document never fully retrieved.</p>
-        <div class="agent-badge" id="unsafe-badge">&#9888; UNSAFE &mdash; Context 34%</div>
+        <div class="demo-col-label">Agent output</div>
+        <div class="agent-output-text" id="agent-text"><span class="cursor"></span></div>
+        <div class="unsafe-badge" id="unsafe-badge">
+          <span class="unsafe-badge-dot"></span>
+          UNSAFE
+        </div>
+        <div class="agent-wrong" id="agent-wrong">High confidence. Wrong answer.</div>
       </div>
 
-      <!-- RIGHT: What actually happened -->
       <div class="demo-col">
-        <div class="demo-col-label">What actually happened &middot; Kairos Trace</div>
+        <div class="demo-col-label">Execution trace</div>
         <div class="trace-events" id="trace-events">
           <div class="trace-event">
             <span class="trace-time">00:00</span>
             <span class="trace-dot ok"></span>
-            <span class="trace-text"><span class="ok">agent.started</span></span>
+            <span class="trace-label"><span class="ok">agent.started</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:01</span>
             <span class="trace-dot ok"></span>
-            <span class="trace-text"><span class="ok">tool.called</span><span class="dim">: document.fetch</span></span>
+            <span class="trace-label"><span class="ok">tool.called</span><span class="dim"> &mdash; document.fetch</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:08</span>
             <span class="trace-dot warn"></span>
-            <span class="trace-text"><span class="warn">tool.timeout</span></span>
+            <span class="trace-label"><span class="warn">tool.timeout</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:09</span>
             <span class="trace-dot warn"></span>
-            <span class="trace-text"><span class="warn">retry.triggered</span><span class="dim"> &mdash; attempt 1/2</span></span>
+            <span class="trace-label"><span class="warn">retry</span><span class="dim"> &mdash; 1 of 2</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:14</span>
             <span class="trace-dot warn"></span>
-            <span class="trace-text"><span class="warn">tool.timeout</span></span>
+            <span class="trace-label"><span class="warn">tool.timeout</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:15</span>
             <span class="trace-dot warn"></span>
-            <span class="trace-text"><span class="warn">retry.triggered</span><span class="dim"> &mdash; attempt 2/2</span></span>
+            <span class="trace-label"><span class="warn">retry</span><span class="dim"> &mdash; 2 of 2</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:21</span>
             <span class="trace-dot risk"></span>
-            <span class="trace-text"><span class="risk">context.partial</span><span class="dim"> &mdash; 34% retrieved</span></span>
+            <span class="trace-label"><span class="risk">context.loss</span><span class="dim"> &mdash; 34% retrieved</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:22</span>
             <span class="trace-dot risk"></span>
-            <span class="trace-text"><span class="risk">context.loss.detected</span></span>
+            <span class="trace-label"><span class="risk">hallucination.risk.detected</span></span>
           </div>
           <div class="trace-event">
             <span class="trace-time">00:24</span>
             <span class="trace-dot risk pulse"></span>
-            <span class="trace-text"><span class="risk">agent.returned_answer</span></span>
+            <span class="trace-label"><span class="risk">answer.returned</span><span class="dim"> &mdash; confidence: HIGH</span></span>
           </div>
         </div>
       </div>
     </div>
 
     <div class="demo-status-bar">
-      <div class="status-item">Status: <span class="v v-unsafe">UNSAFE</span></div>
-      <div class="status-item">Confidence: <span class="v v-warn">HIGH</span></div>
-      <div class="status-item">Retries: <span class="v v-ok">2</span></div>
-      <div class="status-item">Context: <span class="v v-unsafe">34%</span></div>
+      <span class="status-pill">UNSAFE <span class="v v-red">&#9632;</span></span>
+      <span class="status-pill">2 retries <span class="v v-yellow">&#9632;</span></span>
+      <span class="status-pill">34% context <span class="v v-red">&#9632;</span></span>
+      <span class="status-pill">replay ready <span class="v v-mint">&#9632;</span></span>
     </div>
   </div>
 
-  <button class="demo-replay-btn" id="replay-btn">&#8635; Replay</button>
+  <button class="demo-replay-btn" id="replay-btn">&#8635; replay</button>
 
   <p class="demo-insight">
-    The issue was not the failed tool call.<br>
-    The issue was that the agent still returned an answer.
+    The tool didn't fail. The agent did.<br>Kairos shows you the difference.
   </p>
 </section>
 
-<!-- ─── HOW IT WORKS ──────────────────────────────────────────────────────── -->
+<!-- HOW IT WORKS -->
 <section id="how">
   <div class="section-wrap">
     <div class="fade-in">
       <div class="section-label">How it works</div>
-      <h2 class="section-h2">Three lines of code.<br>Complete visibility.</h2>
-      <p class="section-sub">Instrument your agents once. Kairos handles capture, storage, replay, and compliance.</p>
+      <h2 class="section-h2">Three steps.<br>Complete visibility.</h2>
+      <p class="section-sub">Instrument your agents once. Kairos handles capture, replay, and compliance.</p>
     </div>
-    <div class="how-grid fade-in">
+    <div class="how-steps fade-in">
 
-      <div class="how-card">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        </div>
-        <h3>Instrument once</h3>
-        <p>Add 3 lines of code. Every tool call, retry, decision, and output is captured automatically. Works with any agent framework.</p>
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <h3>Instrument</h3>
+        <p>One import. Every tool call, decision, and failure captured automatically. Works with any agent framework.</p>
         <div class="how-code"><span class="kw">from</span> <span class="fn">kairos_trace</span> <span class="kw">import</span> <span class="fn">trace</span>
 
-<span class="kw">with</span> <span class="fn">trace</span>(<span class="st">"agent.review"</span>) <span class="kw">as</span> t:
+<span class="kw">with</span> <span class="fn">trace</span>(<span class="st">"run"</span>) <span class="kw">as</span> t:
     result = agent.<span class="fn">run</span>(input)</div>
       </div>
 
-      <div class="how-card">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="#9cffc7" stroke="none"/></svg>
-        </div>
-        <h3>Replay everything</h3>
-        <p>Step through any execution from start to finish. See exactly where context was lost, which tool failed, why the agent returned that answer.</p>
-        <div class="how-code"><span class="cm"># Jump to any run</span>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <h3>Replay</h3>
+        <p>Scrub through any execution. Every step. Every context window. Every retry. See exactly what your agent saw.</p>
+        <div class="how-code"><span class="cm"># Navigate any execution</span>
 kairos replay <span class="st">--run</span> 4417
 kairos diff <span class="st">--event</span> context.loss
 kairos share <span class="st">--link</span></div>
       </div>
 
-      <div class="how-card">
-        <div class="how-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-        </div>
-        <h3>Export the evidence</h3>
-        <p>Full audit trail for every run. EU AI Act Article 12 compliance documentation generated automatically. Regulator-ready, always.</p>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <h3>Prove</h3>
+        <p>Export a complete audit trail. EU AI Act Article 12. Built in. Regulator-ready, always.</p>
         <div class="how-code"><span class="cm"># Export audit trail</span>
 kairos export <span class="st">--run</span> 4417 \
   <span class="st">--format</span> pdf \
@@ -1090,169 +975,131 @@ kairos export <span class="st">--run</span> 4417 \
   </div>
 </section>
 
-<!-- ─── THE FAILURES THAT LOGS MISS ──────────────────────────────────────── -->
+<!-- THE FAILURES -->
 <section id="failures">
   <div class="section-wrap">
     <div class="fade-in">
-      <div class="section-label">The failures that logs miss</div>
-      <h2 class="section-h2">Agents fail silently.<br>Every time.</h2>
-      <p class="section-sub">HTTP logs show a 200. The agent returned an answer. Everything looked fine. It wasn't.</p>
+      <div class="section-label">The failures that logs can't find</div>
+      <h2 class="section-h2">Traditional logs tell you<br>a request happened.</h2>
+      <p class="section-sub">They don't tell you why the agent returned that answer.</p>
     </div>
     <div class="failures-grid fade-in">
 
       <div class="failure-card">
-        <div class="failure-tag">Contract review</div>
-        <p class="failure-quote">"Contract review agent returned 'no issues found' after losing 66% of the document to a tool timeout."</p>
-        <p class="failure-follow">Client called three days later.</p>
-        <div class="mini-trace">
-          <div class="mini-trace-label">Kairos would have shown</div>
-          <div class="mini-event"><span class="mini-dot warn"></span>tool.timeout &mdash; 00:08</div>
-          <div class="mini-event"><span class="mini-dot risk"></span>context.partial &mdash; 34% retrieved</div>
-          <div class="mini-event"><span class="mini-dot risk"></span>agent.returned_answer &mdash; UNSAFE</div>
-        </div>
+        <p class="failure-story">
+          A contract review agent read 34% of the document due to a tool timeout. It returned "no issues found" with 94% confidence. The client called three days later.
+        </p>
       </div>
 
       <div class="failure-card">
-        <div class="failure-tag">Customer support</div>
-        <p class="failure-quote">"Customer support agent told a customer their refund was processed."</p>
-        <p class="failure-follow">It wasn't. Three hours debugging logs that showed nothing useful.</p>
-        <div class="mini-trace">
-          <div class="mini-trace-label">Kairos would have shown</div>
-          <div class="mini-event"><span class="mini-dot warn"></span>tool.failed &mdash; payment.confirm</div>
-          <div class="mini-event"><span class="mini-dot risk"></span>context.lost &mdash; state unverified</div>
-          <div class="mini-event"><span class="mini-dot risk"></span>agent.returned_answer &mdash; UNSAFE</div>
-        </div>
+        <p class="failure-story">
+          A customer service agent told a user their refund had been processed. It hadn't. The logs showed a 200 OK. They showed nothing useful.
+        </p>
       </div>
 
       <div class="failure-card">
-        <div class="failure-tag">Regulatory audit</div>
-        <p class="failure-quote">"Regulator asked what the AI system decided at 3pm on March 14th."</p>
-        <p class="failure-follow">You had HTTP logs. They wanted a full decision trace.</p>
-        <div class="mini-trace">
-          <div class="mini-trace-label">Kairos would have captured</div>
-          <div class="mini-event"><span class="mini-dot ok"></span>decision.made &mdash; 14 Mar 15:03</div>
-          <div class="mini-event"><span class="mini-dot ok"></span>context.snapshot &mdash; stored</div>
-          <div class="mini-event"><span class="mini-dot ok"></span>audit.export &mdash; EU AI Act ready</div>
-        </div>
+        <p class="failure-story">
+          A financial advice agent made a recommendation after losing its system prompt halfway through a long conversation. Nobody noticed for six weeks.
+        </p>
       </div>
 
     </div>
+    <div class="failures-close fade-in">Kairos replays all of it.</div>
   </div>
 </section>
 
-<!-- ─── PRICING ───────────────────────────────────────────────────────────── -->
+<!-- PRICING -->
 <section id="pricing">
   <div class="section-wrap">
     <div class="pricing-header fade-in">
       <div class="section-label">Pricing</div>
-      <h2 class="section-h2">Start free. Pay when you need more.</h2>
-      <p>No credit card required to get started.</p>
+      <h2 class="section-h2">Pricing</h2>
     </div>
     <div class="pricing-grid fade-in">
 
       <div class="pricing-card">
-        <div class="pricing-name">Trace Free</div>
+        <div class="pricing-tier">Free</div>
         <div class="pricing-price">&pound;0<span class="pricing-period">/mo</span></div>
-        <div class="pricing-sub">For individuals and small experiments.</div>
-        <div class="pricing-divider"></div>
+        <div class="pricing-desc">For developers evaluating.</div>
+        <div class="pricing-line"></div>
         <ul class="pricing-features">
-          <li>500 trace events / month</li>
-          <li>7-day replay history</li>
-          <li>1 workflow</li>
-          <li>Python + TypeScript SDK</li>
-          <li>Community support</li>
+          <li>500 events</li>
+          <li>7-day replay</li>
+          <li>SDK</li>
         </ul>
-        <a href="/app" class="btn-pricing-outline">Get started free</a>
+        <a href="/app" class="btn-p-outline">Get started</a>
       </div>
 
       <div class="pricing-card featured">
-        <div class="pricing-badge">Most popular</div>
-        <div class="pricing-name">Trace Pro</div>
+        <div class="featured-badge">Most popular</div>
+        <div class="pricing-tier">Pro</div>
         <div class="pricing-price">&pound;19<span class="pricing-period">/mo</span></div>
-        <div class="pricing-sub">For teams shipping agents to production.</div>
-        <div class="pricing-divider"></div>
+        <div class="pricing-desc">For teams shipping to production.</div>
+        <div class="pricing-line"></div>
         <ul class="pricing-features">
-          <li>Unlimited trace events</li>
-          <li>30-day replay history</li>
-          <li>Unlimited workflows</li>
-          <li>Shareable replay links</li>
+          <li>Unlimited events</li>
+          <li>30-day replay</li>
+          <li>Shareable links</li>
           <li>Priority support</li>
         </ul>
-        <a href="/pricing" class="btn-pricing-primary">Get Pro</a>
+        <a href="/pricing" class="btn-p-mint">Get Pro</a>
       </div>
 
       <div class="pricing-card">
-        <div class="pricing-name">Enterprise</div>
-        <div class="pricing-price pricing-talk">Talk to us</div>
-        <div class="pricing-sub">For regulated industries and large teams.</div>
-        <div class="pricing-divider"></div>
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-price pricing-talk">Let's talk</div>
+        <div class="pricing-desc">For regulated environments.</div>
+        <div class="pricing-line"></div>
         <ul class="pricing-features">
-          <li>Everything in Pro</li>
-          <li>EU AI Act audit trails</li>
-          <li>Compliance documentation</li>
+          <li>Audit trails</li>
+          <li>EU AI Act compliance</li>
           <li>Custom retention</li>
-          <li>Dedicated support</li>
+          <li>SLA</li>
         </ul>
-        <a href="mailto:kylenalamvelil@icloud.com" class="btn-pricing-outline">Contact us</a>
+        <a href="mailto:kylenalamvelil@icloud.com" class="btn-p-outline">Contact us</a>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ─── FINAL CTA ─────────────────────────────────────────────────────────── -->
+<!-- CLOSING CTA -->
 <section id="cta">
   <div class="cta-inner fade-in">
-    <h2>Start tracing in minutes.</h2>
-    <p>Add 3 lines of code. See your first agent replay.</p>
-    <div class="cta-code">
+    <h2>Start in three lines of code.</h2>
+    <div class="cta-code-block">
       <span class="prompt">$</span> pip install kairos-trace
     </div>
-    <div class="cta-ctas">
-      <a href="/app" class="btn-cta-primary">Get started free &rarr;</a>
-      <a href="/docs" class="btn-cta-outline">View documentation</a>
-    </div>
+    <br>
+    <a href="/app" class="btn-cta">Start free &rarr;</a>
   </div>
 </section>
 
-<!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-top">
-      <div>
-        <div class="footer-logo">Kairos</div>
-        <div class="footer-tagline">Execution replay for AI agents.</div>
-      </div>
-      <div class="footer-links">
-        <a href="/docs">Docs</a>
-        <a href="https://github.com/withkairos" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="#pricing">Pricing</a>
-        <a href="mailto:kylenalamvelil@icloud.com">Contact</a>
-      </div>
+    <div class="footer-left">Kairos</div>
+    <div class="footer-center">
+      <a href="https://withkairos.dev" target="_blank" rel="noopener noreferrer">withkairos.dev</a>
     </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Kairos Technologies Ltd.</span>
-      <span>Built for teams shipping agents to production.</span>
-    </div>
+    <div class="footer-right">&copy; 2026</div>
   </div>
 </footer>
 
 <script>
-  // ── Nav frosted glass ──────────────────────────────────
+  // ── Nav ────────────────────────────────────────────────────
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 20);
   }, { passive: true });
-
-  // ── Mobile nav toggle ──────────────────────────────────
   function toggleNav() {
-    document.getElementById('navCenter').classList.toggle('open');
+    document.getElementById('navLinks').classList.toggle('open');
   }
-  document.querySelectorAll('#navCenter a').forEach(a => {
-    a.addEventListener('click', () => document.getElementById('navCenter').classList.remove('open'));
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
   });
 
-  // ── Smooth scroll with nav offset ─────────────────────
+  // ── Smooth scroll ──────────────────────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const href = a.getAttribute('href');
@@ -1260,34 +1107,115 @@ kairos export <span class="st">--run</span> 4417 \
       const target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' });
     });
   });
 
-  // ── Scroll fade-in ─────────────────────────────────────
+  // ── Particle canvas ────────────────────────────────────────
+  (function() {
+    const isMobile = window.innerWidth < 769;
+    if (isMobile) return;
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles;
+    const COUNT = 80;
+    const MAX_DIST = 120;
+    const SPEED = 0.28;
+
+    function resize() {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+
+    function mkParticle() {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * SPEED,
+        vy: (Math.random() - 0.5) * SPEED,
+        r: Math.random() * 1.5 + 0.5
+      };
+    }
+
+    function init() {
+      resize();
+      particles = Array.from({ length: COUNT }, mkParticle);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(246,247,244,0.45)';
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < MAX_DIST) {
+            const alpha = (1 - d / MAX_DIST) * 0.13;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(156,255,199,${alpha})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize, { passive: true });
+    init();
+    draw();
+  })();
+
+  // ── Fade-in observer ───────────────────────────────────────
   const fadeObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
+    });
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
 
-  // ── Demo animation ─────────────────────────────────────
-  const AGENT_TEXT = 'Contract reviewed. All clauses analysed. No critical issues identified.';
-  const DELAYS = [300, 850, 1600, 2300, 3000, 3700, 4500, 5200, 5900];
+  // ── Demo animation ─────────────────────────────────────────
+  const AGENT_TEXT = 'Contract reviewed. No critical issues found.';
+  const TRACE_DELAYS = [200, 700, 1500, 2100, 2800, 3400, 4200, 5000, 5800];
 
-  let animTO = null, charIV = null, running = false;
+  let demoRunning = false, charIV = null, animTOs = [];
+
+  function clearDemo() {
+    clearInterval(charIV);
+    animTOs.forEach(clearTimeout);
+    animTOs = [];
+    demoRunning = false;
+  }
 
   function runDemo() {
-    if (running) return;
-    running = true;
+    if (demoRunning) return;
+    demoRunning = true;
 
-    const respEl  = document.getElementById('agent-response-text');
-    const noteEl  = document.getElementById('agent-note');
-    const badge   = document.getElementById('unsafe-badge');
-    const events  = document.querySelectorAll('#trace-events .trace-event');
+    const textEl   = document.getElementById('agent-text');
+    const badge    = document.getElementById('unsafe-badge');
+    const wrong    = document.getElementById('agent-wrong');
+    const events   = document.querySelectorAll('#trace-events .trace-event');
 
-    respEl.innerHTML = '<span class="cursor"></span>';
-    noteEl.classList.remove('visible');
-    badge.classList.remove('visible');
+    textEl.innerHTML = '<span class="cursor"></span>';
+    badge.classList.remove('show');
+    wrong.classList.remove('show');
     events.forEach(ev => ev.classList.remove('show'));
 
     let i = 0;
@@ -1295,33 +1223,33 @@ kairos export <span class="st">--run</span> 4417 \
     charIV = setInterval(() => {
       if (i >= AGENT_TEXT.length) {
         clearInterval(charIV);
-        setTimeout(() => noteEl.classList.add('visible'), 300);
-        setTimeout(() => badge.classList.add('visible'), 700);
+        animTOs.push(setTimeout(() => badge.classList.add('show'), 500));
+        animTOs.push(setTimeout(() => wrong.classList.add('show'), 800));
         return;
       }
-      respEl.innerHTML = AGENT_TEXT.slice(0, ++i) + '<span class="cursor"></span>';
-    }, 36);
+      textEl.innerHTML = AGENT_TEXT.slice(0, ++i) + '<span class="cursor"></span>';
+    }, 38);
 
-    events.forEach((ev, idx) => setTimeout(() => ev.classList.add('show'), DELAYS[idx]));
+    events.forEach((ev, idx) => {
+      animTOs.push(setTimeout(() => ev.classList.add('show'), TRACE_DELAYS[idx]));
+    });
 
-    animTO = setTimeout(() => { running = false; }, DELAYS[DELAYS.length - 1] + 1000);
+    animTOs.push(setTimeout(() => { demoRunning = false; }, TRACE_DELAYS[TRACE_DELAYS.length - 1] + 1200));
   }
 
-  // Auto-play on scroll into view
-  let played = false;
+  let demoPlayed = false;
   const demoCard = document.getElementById('demo-card');
   const demoObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting && !played) { played = true; setTimeout(runDemo, 150); } });
-  }, { threshold: 0.25 });
+    entries.forEach(e => {
+      if (e.isIntersecting && !demoPlayed) { demoPlayed = true; setTimeout(runDemo, 200); }
+    });
+  }, { threshold: 0.2 });
   if (demoCard) demoObs.observe(demoCard);
 
-  // Replay button
   document.getElementById('replay-btn').addEventListener('click', () => {
-    clearTimeout(animTO);
-    clearInterval(charIV);
-    running = false;
-    played = true;
-    setTimeout(runDemo, 60);
+    clearDemo();
+    demoPlayed = true;
+    setTimeout(runDemo, 80);
   });
 </script>
 </body>
