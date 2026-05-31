@@ -1,0 +1,243 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&amp;display=swap');
+      .wordmark {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-weight: 700;
+        font-size: 48px;
+        letter-spacing: 0.08em;
+      }
+    </style>
+  </defs>
+
+  <!-- ============================================================
+       VERSION 1: Full Wordmark + Mark (Dark)
+       Dark background — primary usage
+       ============================================================ -->
+  <g id="v1-full-dark">
+    <!-- Background -->
+    <rect x="0" y="0" width="280" height="120" fill="#050606"/>
+
+    <!-- Mark: diamond made of two triangles (trace symbol) -->
+    <!-- Top triangle: pointing up — origin node -->
+    <polygon
+      points="30,60 50,30 70,60"
+      fill="#9cffc7"
+    />
+    <!-- Bottom triangle: pointing down — destination node -->
+    <polygon
+      points="30,60 50,90 70,60"
+      fill="#9cffc7"
+      opacity="0.55"
+    />
+
+    <!-- Wordmark -->
+    <text
+      x="86"
+      y="72"
+      class="wordmark"
+      fill="#f6f7f4"
+    >KAIROS</text>
+
+    <!-- Label -->
+    <text
+      x="86"
+      y="100"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.12em"
+      fill="#6b7280"
+    >KAIROS — DARK</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 2: Wordmark Only (Dark)
+       ============================================================ -->
+  <g id="v2-wordmark-dark" transform="translate(300, 0)">
+    <!-- Background -->
+    <rect x="0" y="0" width="280" height="120" fill="#050606"/>
+
+    <!-- Wordmark only -->
+    <text
+      x="20"
+      y="72"
+      class="wordmark"
+      fill="#f6f7f4"
+    >KAIROS</text>
+
+    <!-- Label -->
+    <text
+      x="20"
+      y="100"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.12em"
+      fill="#6b7280"
+    >WORDMARK ONLY — DARK</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 3: Mark Only (Dark)
+       ============================================================ -->
+  <g id="v3-mark-dark" transform="translate(0, 140)">
+    <!-- Background -->
+    <rect x="0" y="0" width="120" height="120" fill="#050606"/>
+
+    <!-- Mark centered -->
+    <!-- Top triangle -->
+    <polygon
+      points="60,20 80,60 40,60"
+      fill="#9cffc7"
+    />
+    <!-- Bottom triangle -->
+    <polygon
+      points="40,60 80,60 60,100"
+      fill="#9cffc7"
+      opacity="0.55"
+    />
+
+    <!-- Label -->
+    <text
+      x="10"
+      y="115"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.08em"
+      fill="#6b7280"
+    >MARK ONLY</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 4: Full Wordmark + Mark (Light)
+       Light background version
+       ============================================================ -->
+  <g id="v4-full-light" transform="translate(140, 140)">
+    <!-- Background -->
+    <rect x="0" y="0" width="280" height="120" fill="#f6f7f4"/>
+
+    <!-- Mark -->
+    <!-- Top triangle -->
+    <polygon
+      points="30,60 50,30 70,60"
+      fill="#050606"
+    />
+    <!-- Bottom triangle (lighter) -->
+    <polygon
+      points="30,60 50,90 70,60"
+      fill="#050606"
+      opacity="0.4"
+    />
+
+    <!-- Wordmark -->
+    <text
+      x="86"
+      y="72"
+      class="wordmark"
+      fill="#050606"
+    >KAIROS</text>
+
+    <!-- Label -->
+    <text
+      x="86"
+      y="100"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.12em"
+      fill="#6b7280"
+    >KAIROS — LIGHT</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 5: Wordmark Only (Light)
+       ============================================================ -->
+  <g id="v5-wordmark-light" transform="translate(440, 140)">
+    <!-- Background -->
+    <rect x="0" y="0" width="160" height="120" fill="#f6f7f4"/>
+
+    <!-- Wordmark -->
+    <text
+      x="10"
+      y="72"
+      class="wordmark"
+      fill="#050606"
+      font-size="36"
+    >KAIROS</text>
+
+    <!-- Label -->
+    <text
+      x="10"
+      y="100"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.08em"
+      fill="#6b7280"
+    >WORDMARK — LIGHT</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 6: Mark Only (Light)
+       ============================================================ -->
+  <g id="v6-mark-light" transform="translate(0, 280)">
+    <!-- Background -->
+    <rect x="0" y="0" width="120" height="120" fill="#f6f7f4"/>
+
+    <!-- Mark centered -->
+    <polygon
+      points="60,20 80,60 40,60"
+      fill="#050606"
+    />
+    <polygon
+      points="40,60 80,60 60,100"
+      fill="#050606"
+      opacity="0.4"
+    />
+
+    <!-- Label -->
+    <text
+      x="10"
+      y="115"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.08em"
+      fill="#6b7280"
+    >MARK — LIGHT</text>
+  </g>
+
+  <!-- ============================================================
+       VERSION 7: Favicon-sized Mark (32x32 represented at 2x scale)
+       ============================================================ -->
+  <g id="v7-mark-favicon" transform="translate(140, 280)">
+    <!-- Background -->
+    <rect x="0" y="0" width="120" height="120" fill="#050606" rx="16"/>
+
+    <!-- Mark at favicon proportions, centered, scaled up for display -->
+    <polygon
+      points="60,22 82,60 38,60"
+      fill="#9cffc7"
+    />
+    <polygon
+      points="38,60 82,60 60,98"
+      fill="#9cffc7"
+      opacity="0.5"
+    />
+
+    <!-- Label -->
+    <text
+      x="10"
+      y="115"
+      font-family="'Inter', system-ui, sans-serif"
+      font-size="10"
+      font-weight="500"
+      letter-spacing="0.08em"
+      fill="#6b7280"
+    >APP ICON</text>
+  </g>
+
+</svg>

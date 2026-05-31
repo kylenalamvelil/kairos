@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIROS — Social Post Templates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:     #050606;
+      --mint:      #9cffc7;
+      --white:     #f6f7f4;
+      --muted:     #6b7280;
+      --surface:   #0d0f0e;
+      --border:    #1a1f1e;
+      --error:     #ff6b6b;
+      --warning:   #fbbf24;
+      --mint-dim:  rgba(156,255,199,0.12);
+      --err-dim:   rgba(255,107,107,0.12);
+    }
+
+    body {
+      background: #080a09;
+      color: var(--white);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ---- Page layout ---- */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px 100px;
+    }
+
+    .page-header {
+      margin-bottom: 64px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tri-up {
+      width: 0; height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 14px solid var(--mint);
+    }
+
+    .tri-down {
+      width: 0; height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 14px solid rgba(156,255,199,0.45);
+    }
+
+    .wordmark {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--white);
+    }
+
+    .page-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ---- Grid ---- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    /* ---- Post Card ---- */
+    .post-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .post-number {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* The post preview (square) */
+    .post {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle grid background */
+    .post::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .post-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .post-mark .tri-up { border-bottom-width: 11px; }
+    .post-mark .tri-down { border-top-width: 11px; }
+    .post-mark .tri-up, .post-mark .tri-down {
+      border-left-width: 7px;
+      border-right-width: 7px;
+    }
+
+    .brand-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--white);
+    }
+
+    .brand-handle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .post-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tag-incident { background: var(--err-dim); color: var(--error); }
+    .tag-policy   { background: rgba(251,191,36,0.12); color: var(--warning); }
+    .tag-product  { background: var(--mint-dim); color: var(--mint); }
+    .tag-learning { background: rgba(107,114,128,0.15); color: var(--muted); }
+    .tag-oss      { background: var(--mint-dim); color: var(--mint); }
+    .tag-compare  { background: rgba(107,114,128,0.15); color: var(--muted); }
+
+    /* Post body */
+    .post-body {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .post-headline {
+      font-size: clamp(20px, 4.5vw, 28px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    .post-headline .accent  { color: var(--mint); }
+    .post-headline .danger  { color: var(--error); }
+    .post-headline .warning { color: var(--warning); }
+
+    .post-subtext {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 95%;
+    }
+
+    /* Code snippet */
+    .post-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--white);
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .c-k  { color: var(--mint); }
+    .c-s  { color: #e0c97a; }
+    .c-cm { color: var(--muted); }
+    .c-n  { color: #ff9e7a; }
+    .c-e  { color: var(--error); }
+    .c-w  { color: var(--warning); }
+
+    /* Metric display */
+    .metric-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--mint);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .metric-val.danger { color: var(--error); }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Comparison table */
+    .compare-table {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-row:last-child { border-bottom: none; }
+
+    .compare-cell {
+      padding: 8px 12px;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+    }
+
+    .compare-cell:last-child { border-right: none; }
+
+    .compare-row.header .compare-cell {
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .compare-cell.good { color: var(--mint); }
+    .compare-cell.bad  { color: var(--error); }
+
+    /* Checklist */
+    .checklist {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .check-icon { color: var(--mint); flex-shrink: 0; margin-top: 1px; }
+    .check-icon.x { color: var(--error); }
+
+    /* Testimonial */
+    .testimonial-block {
+      margin-top: 12px;
+      border-left: 2px solid var(--mint);
+      padding-left: 16px;
+    }
+
+    .testimonial-text {
+      font-size: 14px;
+      color: var(--white);
+      line-height: 1.5;
+      font-style: normal;
+    }
+
+    .testimonial-author {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 8px;
+    }
+
+    /* Post footer */
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-url {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--mint);
+    }
+
+    .post-date {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Tweet copy (below the card) */
+    .tweet-copy {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+    }
+
+    .tweet-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .tweet-text {
+      font-size: 13px;
+      color: var(--white);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    /* Divider between pairs */
+    .section-divider {
+      grid-column: 1 / -1;
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 8px 0;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--mint);
+      border-radius: 2px;
+    }
+
+    /* Divider label (for comparison posts) */
+    .divider-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 6px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 10px 0;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="logo-lockup">
+      <div class="mark">
+        <div class="tri-up"></div>
+        <div class="tri-down"></div>
+      </div>
+      <span class="wordmark">KAIROS</span>
+    </div>
+    <div class="page-meta">social_templates.html · v1.0 · 10 posts</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- ===========================================================
+         POST 1: Agent failure caught by trace
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">01 — Agent failure / incident</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-incident">Incident</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            <span class="danger">847 calls.</span><br>
+            One missed guard.
+          </div>
+          <div class="post-subtext">The agent hit a rate limit and retried the same tool call for 4 minutes. KAIROS caught the loop. Here's the trace.</div>
+          <div class="post-code">
+<span class="c-cm">## trace: krs_01jw7f2m9x4q8r3</span>
+<span class="c-k">event</span>      loop.detected
+<span class="c-k">tool</span>       web_search
+<span class="c-e">iterations</span> 847
+<span class="c-k">trigger</span>    circuit_breaker → <span class="c-k">exit</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/blog</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">An agent called the same API 847 times in a loop before we caught it.
+
+The fix wasn't in the prompt. It was a guard at the trace level — detecting identical tool calls before they compound.
+
+Loop detection ships in KAIROS 0.4. Writeup in the thread.</div>
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         POST 2: EU AI Act compliance
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">02 — EU AI Act compliance</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-policy">Policy</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            EU AI Act Art. 13<br>
+            <span class="warning">Your logs don't<br>meet the standard.</span>
+          </div>
+          <div class="post-subtext">High-risk AI systems must maintain logs sufficient to reconstruct every decision. Here's what that actually requires.</div>
+          <div class="checklist">
+            <div class="check-item">
+              <span class="check-icon">✓</span>
+              <span>Full input/output at each decision node</span>
+            </div>
+            <div class="check-item">
+              <span class="check-icon">✓</span>
+              <span>Immutable append-only storage</span>
+            </div>
+            <div class="check-item">
+              <span class="check-icon">✓</span>
+              <span>Timestamps to microsecond precision</span>
+            </div>
+            <div class="check-item">
+              <span class="check-icon x">✗</span>
+              <span style="color:var(--error)">Standard application logs fail all three</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/compliance</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">EU AI Act Article 13 requires high-risk AI systems to maintain logs sufficient to reconstruct every decision the system made.
+
+If you're running agents in any regulated workflow, your current logging almost certainly doesn't meet this standard.
+
+What it actually requires: thread ↓</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ===========================================================
+         POST 3: Logs vs replay comparison
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">03 — Logs vs replay comparison</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-compare">Deep dive</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            Logs tell you<br>
+            <span class="danger">what</span> broke.<br>
+            Replay tells you <span class="accent">why.</span>
+          </div>
+          <div class="compare-table">
+            <div class="compare-row header">
+              <div class="compare-cell"></div>
+              <div class="compare-cell">Logs</div>
+              <div class="compare-cell">KAIROS replay</div>
+            </div>
+            <div class="compare-row">
+              <div class="compare-cell">Context at failure</div>
+              <div class="compare-cell bad">partial</div>
+              <div class="compare-cell good">full</div>
+            </div>
+            <div class="compare-row">
+              <div class="compare-cell">Step-through</div>
+              <div class="compare-cell bad">no</div>
+              <div class="compare-cell good">yes</div>
+            </div>
+            <div class="compare-row">
+              <div class="compare-cell">State reconstruction</div>
+              <div class="compare-cell bad">manual</div>
+              <div class="compare-cell good">automatic</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/replay</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">Logs tell you what broke. Replay tells you why.
+
+With logs, you're reconstructing state manually from scattered lines. With KAIROS replay, you step through the run decision-by-decision — full context at each node.
+
+The difference matters most at 2am when you can't reproduce the bug.</div>
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         POST 4: Product update announcement
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">04 — Product update</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-product">v0.4.0</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            KAIROS 0.4<br>
+            <span class="accent">Structured replay.<br>Loop detection.</span>
+          </div>
+          <div class="post-code">
+<span class="c-cm"># What ships in 0.4</span>
+<span class="c-k">+</span> structured_replay()     <span class="c-cm"># step-through any run</span>
+<span class="c-k">+</span> loop_guard(threshold=3) <span class="c-cm"># catch infinite loops</span>
+<span class="c-k">+</span> event_schema v2         <span class="c-cm"># backward compatible</span>
+<span class="c-k">+</span> trace_diff()            <span class="c-cm"># compare two runs</span>
+<span class="c-cm">  migration guide → docs</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/changelog</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">KAIROS 0.4 ships today.
+
+→ Structured replay: step through any agent run decision-by-decision
+→ Loop guard: configurable circuit breaker, fires before the damage compounds
+→ Trace diff: compare two runs side-by-side against the same task
+→ Event schema v2: backward compatible, richer context per node
+
+Changelog and migration guide in the thread.</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ===========================================================
+         POST 5: Learnings from 1000 failures
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">05 — What we learned from 1000 agent failures</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-learning">Research</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            1,000 agent failures.<br>
+            <span class="accent">Three root causes.</span>
+          </div>
+          <div class="post-code">
+<span class="c-cm">## failure breakdown — kairos traces</span>
+<span class="c-e">tool_loop</span>        <span class="c-n">38%</span>  <span class="c-cm">rate limits, 404s</span>
+<span class="c-e">context_overflow</span> <span class="c-n">29%</span>  <span class="c-cm">prompt too long</span>
+<span class="c-e">halluc_tool_call</span> <span class="c-n">21%</span>  <span class="c-cm">tool that doesn't exist</span>
+<span class="c-cm">other            12%</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/research</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">We analyzed 1,000 agent failures captured in KAIROS traces.
+
+38% were tool loops — agents retrying failed calls with no backoff.
+29% were context overflow — the prompt grew past the model's window.
+21% were hallucinated tool calls — the agent called a tool that doesn't exist.
+
+The fix for all three is observability, not better prompts. Full breakdown:</div>
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         POST 6: Portkey alternative positioning
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">06 — Competitive positioning</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-compare">Positioning</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            LLM proxies log<br>
+            <span class="danger">API calls.</span><br>
+            We log <span class="accent">decisions.</span>
+          </div>
+          <div class="post-subtext">A tool call is one line in a proxy log. In KAIROS it's a node in the trace — with the full agent state, context window, and preceding decision path attached.</div>
+          <div class="progress-bar" style="margin-top:18px;">
+            <div class="progress-fill" style="width:100%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;">API log</span>
+            <span style="font-size:10px;color:var(--mint);font-family:'JetBrains Mono',monospace;">KAIROS trace</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">LLM proxy logs capture API calls.
+KAIROS captures decisions.
+
+An API log shows you: timestamp, model, tokens, latency.
+A KAIROS trace shows you: the state the agent was in, why it called that tool, what it saw, and what it decided next.
+
+Different product. Different problem.</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ===========================================================
+         POST 7: Technical deep dive teaser
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">07 — Technical deep dive teaser</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-learning">Engineering</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            We moved from<br>
+            JSONB to an<br>
+            <span class="accent">append-only log.</span>
+          </div>
+          <div class="post-code">
+<span class="c-cm">## query time at p95</span>
+<span class="c-e">JSONB (before):</span>  340ms
+<span class="c-k">event log (after):</span>  18ms
+
+<span class="c-cm">## why it matters</span>
+<span class="c-cm">traces are write-once, read-many</span>
+<span class="c-cm">schema: events.sql → github</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/engineering</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">We rebuilt trace storage from JSONB to an append-only event log.
+
+Query time dropped from 340ms to 18ms at p95.
+
+The insight: traces are write-once, read-many. JSONB's flexibility is wasted on an immutable record. An ordered event log is a better fit structurally and faster in practice.
+
+Schema is on GitHub.</div>
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         POST 8: User testimonial
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">08 — User testimonial</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-product">User story</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            "We found the bug<br>in <span class="accent">4 minutes.</span><br>It took 3 days before."
+          </div>
+          <div class="testimonial-block">
+            <div class="testimonial-text">"Before KAIROS we were reading 10,000 lines of logs to figure out why an agent failed. Now we replay the trace, click to the failure point, and the context is right there."</div>
+            <div class="testimonial-author">— Staff engineer, Series B fintech · 40k agent runs/day</div>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev/customers</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">"Before KAIROS we were reading 10,000 lines of logs to figure out why an agent failed. Now we replay the trace, click to the failure point, and the context is right there."
+
+A staff engineer running 40k agent runs a day. Debugging time went from hours to minutes.
+
+If you're in production with agents and still using logs: worth a look.</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ===========================================================
+         POST 9: Open source contribution
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">09 — Open source announcement</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-oss">Open Source</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            kairos-schema<br>
+            <span class="accent">is now public.</span>
+          </div>
+          <div class="post-code">
+<span class="c-cm"># the agent trace event standard</span>
+<span class="c-k">github.com</span>/withkairos/kairos-schema
+
+<span class="c-cm">## includes</span>
+<span class="c-k">+</span> event type definitions
+<span class="c-k">+</span> JSON schema validation
+<span class="c-k">+</span> OpenTelemetry bridge
+<span class="c-k">+</span> migration tools (v1 → v2)
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">github.com/withkairos</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Tweet copy</div>
+        <div class="tweet-text">kairos-schema is now public.
+
+It's the event schema we use internally to represent every agent decision — standardized, versioned, and OpenTelemetry-compatible.
+
+If you're building agent infrastructure and want a common format for trace events, this is a starting point.
+
+github.com/withkairos/kairos-schema</div>
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         POST 10: Show HN
+         =========================================================== -->
+    <div class="post-card">
+      <div class="post-number">10 — Show HN announcement</div>
+      <div class="post">
+        <div class="post-top">
+          <div class="post-brand">
+            <div class="post-mark mark">
+              <div class="tri-up"></div>
+              <div class="tri-down"></div>
+            </div>
+            <div>
+              <div class="brand-name">KAIROS</div>
+              <div class="brand-handle">@withkairos</div>
+            </div>
+          </div>
+          <span class="post-tag tag-learning">Show HN</span>
+        </div>
+
+        <div class="post-body">
+          <div class="post-headline">
+            Show HN:<br>
+            <span class="accent">system of record<br>for agent runs</span>
+          </div>
+          <div class="post-code">
+<span class="c-cm">## what it does</span>
+<span class="c-k">captures</span>  every agent decision
+<span class="c-k">stores</span>    append-only trace log
+<span class="c-k">replays</span>   any run, any point
+<span class="c-k">detects</span>   loops + anomalies
+
+<span class="c-cm">## built with</span>
+<span class="c-cm">FastAPI · PostgreSQL · Inter</span>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-url">withkairos.dev</span>
+          <span class="post-date">2026-05-30</span>
+        </div>
+      </div>
+      <div class="tweet-copy">
+        <div class="tweet-label">Show HN post copy</div>
+        <div class="tweet-text">Show HN: KAIROS – system of record for autonomous agent runs (withkairos.dev)
+
+We built this because our agents were failing in production and we couldn't tell why. Logs were useless — they told us what happened, not what the agent was thinking when it happened.
+
+KAIROS captures every decision an agent makes, stores it in an immutable trace, and lets you replay the run step-by-step with full context at each node.
+
+Stack: FastAPI, PostgreSQL (append-only event log), Python SDK.
+Early access is open. Feedback welcome.</div>
+      </div>
+    </div>
+
+  </div><!-- end grid -->
+
+</div><!-- end page -->
+
+</body>
+</html>

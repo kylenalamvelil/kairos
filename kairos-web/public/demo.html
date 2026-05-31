@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kairos — Execution Replay</title>
+  <title>Kairos — See what actually happened</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -419,8 +419,8 @@
   <!-- Header -->
   <div class="header">
     <span class="eyebrow">Execution Replay</span>
-    <h1 class="page-title">Kairos caught what the agent didn't.</h1>
-    <p class="page-subtitle">A contract review agent returned a confident answer — after losing 66% of the document. This is what that failure looks like from the inside.</p>
+    <h1 class="page-title">This agent returned a confident answer. It was wrong.</h1>
+    <p class="page-subtitle">A contract review agent. Two tool timeouts. 34% context retrieved. High-confidence output. Kairos shows you exactly how this happens.</p>
     <button class="replay-btn" id="replayBtn">
       <span class="replay-icon">⟳</span> Replay
     </button>
@@ -437,7 +437,7 @@
           <div class="tl tl-yellow"></div>
           <div class="tl tl-green"></div>
         </div>
-        Agent Output
+        What the agent returned
       </div>
       <div class="panel-body">
         <div>
@@ -462,7 +462,7 @@
           <div class="tl tl-yellow"></div>
           <div class="tl tl-green"></div>
         </div>
-        Kairos Trace &mdash; Execution Replay
+        What actually happened
       </div>
       <div class="panel-body">
         <ul class="trace-list" id="traceList">
@@ -545,10 +545,16 @@
     "The issue was not the failed tool call. The issue was that the agent still returned an answer."
   </p>
 
+  <!-- Post-demo callout -->
+  <p class="insight" id="postDemo" style="color: var(--muted); font-family: 'Inter', sans-serif; font-size: 15px; margin-top: 40px; opacity: 0; transition: opacity 0.6s ease 0.3s;">
+    This happens in production every day. Most teams find out when a client calls.<br>
+    <strong style="color: var(--text);">Kairos shows you before they do.</strong>
+  </p>
+
   <!-- CTA -->
   <div class="cta-row">
-    <a href="/app" class="btn btn-primary">Start tracing free</a>
-    <a href="/docs" class="btn btn-secondary">View documentation</a>
+    <a href="/app" class="btn btn-primary">Start tracing free &rarr;</a>
+    <a href="/docs" class="btn btn-secondary">Read the docs &rarr;</a>
   </div>
 
   <script>
@@ -582,8 +588,10 @@
       // badge
       document.getElementById('unsafeBadge').classList.remove('visible');
       document.getElementById('unsafeExplanation').classList.remove('visible');
-      // insight
+      // insight + post-demo callout
       document.getElementById('insight').classList.remove('visible');
+      const postDemo = document.getElementById('postDemo');
+      if (postDemo) postDemo.style.opacity = '0';
     }
 
     function runAnimation() {
@@ -629,9 +637,11 @@
         document.getElementById('unsafeExplanation').classList.add('visible');
       }, BADGE_DELAY);
 
-      // Insight
+      // Insight + post-demo callout
       schedule(() => {
         document.getElementById('insight').classList.add('visible');
+        const postDemo = document.getElementById('postDemo');
+        if (postDemo) postDemo.style.opacity = '1';
       }, INSIGHT_DELAY);
     }
 

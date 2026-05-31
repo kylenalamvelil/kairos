@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIROS — Brand Assets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:        #050606;
+      --mint:         #9cffc7;
+      --off-white:    #f6f7f4;
+      --muted:        #6b7280;
+      --surface:      #0d0f0e;
+      --border:       #1a1f1e;
+      --border-strong:#2a3330;
+      --mint-muted:   rgba(156,255,199,0.12);
+      --error:        #ff6b6b;
+      --warning:      #fbbf24;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--off-white);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ---- Layout ---- */
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    .section {
+      margin-bottom: 100px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* ---- Page Header ---- */
+    .page-header {
+      margin-bottom: 80px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .mark-svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .wordmark {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--off-white);
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    /* ---- Color Swatches ---- */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .swatch {
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .swatch-color {
+      height: 80px;
+    }
+
+    .swatch-info {
+      padding: 12px;
+      background: var(--surface);
+    }
+
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--off-white);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .swatch-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .swatch-role {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ---- Type Scale ---- */
+    .type-scale-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+    }
+
+    .type-meta {
+      min-width: 200px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ---- Logo Versions ---- */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .logo-panel {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .logo-panel.dark  { background: var(--black); }
+    .logo-panel.surface { background: var(--surface); }
+    .logo-panel.light { background: var(--off-white); }
+    .logo-panel.mint-bg { background: var(--mint); }
+
+    .logo-panel .caption {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .logo-panel.light .caption { color: #9ca3af; }
+    .logo-panel.mint-bg .caption { color: #2a5540; }
+
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-mark-inline {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .tri-top, .tri-bottom {
+      width: 0;
+      height: 0;
+    }
+
+    /* dark versions */
+    .tri-top-light {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-bottom: 18px solid #9cffc7;
+    }
+    .tri-bottom-light {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 18px solid rgba(156,255,199,0.5);
+    }
+
+    /* light versions */
+    .tri-top-dark {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-bottom: 18px solid #050606;
+    }
+    .tri-bottom-dark {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 18px solid rgba(5,6,6,0.35);
+    }
+
+    /* on mint bg */
+    .tri-top-black {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-bottom: 18px solid #050606;
+    }
+    .tri-bottom-black {
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 18px solid rgba(5,6,6,0.5);
+    }
+
+    .wordmark-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-size: 26px;
+    }
+
+    .wordmark-light { color: var(--off-white); }
+    .wordmark-dark  { color: var(--black); }
+
+    /* ---- UI Components ---- */
+    .component-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 32px;
+    }
+
+    .component-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--mint);
+      color: var(--black);
+    }
+
+    .btn-primary:hover { opacity: 0.85; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--off-white);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn-secondary:hover { border-color: var(--muted); }
+
+    .btn-danger {
+      background: var(--error);
+      color: var(--black);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding-left: 0;
+    }
+
+    .btn-ghost:hover { color: var(--off-white); }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--off-white);
+      margin-bottom: 6px;
+    }
+
+    .card-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 14px;
+    }
+
+    .card-body {
+      font-size: 14px;
+      color: #a1a8a6;
+      line-height: 1.55;
+    }
+
+    .card-footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-stat {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .card-stat span {
+      color: var(--off-white);
+      font-weight: 500;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .badge-mint {
+      background: var(--mint-muted);
+      color: var(--mint);
+    }
+
+    .badge-error {
+      background: rgba(255,107,107,0.12);
+      color: var(--error);
+    }
+
+    .badge-warning {
+      background: rgba(251,191,36,0.12);
+      color: var(--warning);
+    }
+
+    .badge-muted {
+      background: rgba(107,114,128,0.15);
+      color: var(--muted);
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #0a0c0b;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .code-lang {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .code-copy {
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .code-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .tok-keyword  { color: var(--mint); }
+    .tok-string   { color: #e0c97a; }
+    .tok-comment  { color: var(--muted); font-style: normal; }
+    .tok-fn       { color: #c4a8ff; }
+    .tok-num      { color: #ff9e7a; }
+    .tok-type     { color: #7dd3fc; }
+    .tok-default  { color: var(--off-white); }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--off-white);
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .data-table td.mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Input */
+    .form-group { margin-bottom: 16px; }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #0a0c0b;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 9px 12px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      color: var(--off-white);
+      outline: none;
+      transition: border-color 0.12s ease;
+    }
+
+    .form-input:focus { border-color: var(--mint); }
+    .form-input::placeholder { color: var(--muted); }
+
+    .form-input.error { border-color: var(--error); }
+    .form-error-msg {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Data Visualization */
+    .chart-container {
+      background: #0a0c0b;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--off-white);
+      margin-bottom: 4px;
+    }
+
+    .chart-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 20px;
+    }
+
+    /* Email signature */
+    .email-sig {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 24px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .sig-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 2px;
+    }
+
+    .sig-role {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .sig-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 12px 0;
+    }
+
+    .sig-company {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .sig-mark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sig-tri-top {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 11px solid #050606;
+    }
+
+    .sig-tri-bottom {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 11px solid rgba(5,6,6,0.3);
+    }
+
+    .sig-company-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--black);
+    }
+
+    .sig-tagline {
+      font-size: 11px;
+      color: #9ca3af;
+      font-style: normal;
+    }
+
+    .sig-links {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .sig-links a {
+      color: #059669;
+      text-decoration: none;
+    }
+
+    /* Social post preview */
+    .social-preview {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1;
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .social-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .social-mark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .s-tri-top {
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 13px solid #9cffc7;
+    }
+
+    .s-tri-bottom {
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 13px solid rgba(156,255,199,0.45);
+    }
+
+    .social-brand {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--off-white);
+    }
+
+    .social-handle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .social-headline {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--off-white);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .social-headline .accent { color: var(--mint); }
+
+    .social-subtext {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .social-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 16px;
+      color: var(--off-white);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    .social-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .social-url {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--mint);
+    }
+
+    .social-date {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Trace/Timeline component */
+    .trace-line {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 20px;
+      background: #0a0c0b;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .trace-event {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .trace-event:last-child { border-bottom: none; }
+
+    .trace-ts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 2px;
+    }
+
+    .trace-content {
+      font-size: 13px;
+    }
+
+    .trace-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--mint);
+    }
+
+    .trace-detail {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .trace-event.error .trace-name { color: var(--error); }
+    .trace-event.error .trace-ts   { color: rgba(255,107,107,0.5); }
+
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="logo-mark">
+      <div class="logo-mark-inline">
+        <div class="tri-top-light"></div>
+        <div class="tri-bottom-light"></div>
+      </div>
+      <span class="wordmark">KAIROS</span>
+    </div>
+    <h1 style="font-size:13px;font-weight:400;color:var(--muted);">Brand Assets — Visual Reference v1.0</h1>
+    <p>Internal reference. Do not distribute externally.</p>
+  </div>
+
+  <!-- ================================================================
+       SECTION 1: COLOR PALETTE
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">01 — Color Palette</div>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#050606;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Black</span>
+          <span class="swatch-hex">#050606</span>
+          <div class="swatch-role">Primary background</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#9cffc7;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Mint</span>
+          <span class="swatch-hex">#9cffc7</span>
+          <div class="swatch-role">Primary accent</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f6f7f4;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Off-white</span>
+          <span class="swatch-hex">#f6f7f4</span>
+          <div class="swatch-role">Primary text</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#6b7280;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Muted</span>
+          <span class="swatch-hex">#6b7280</span>
+          <div class="swatch-role">Secondary text</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0d0f0e;border-top:1px solid #1a1f1e;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Surface</span>
+          <span class="swatch-hex">#0d0f0e</span>
+          <div class="swatch-role">Cards, panels</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1a1f1e;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Border</span>
+          <span class="swatch-hex">#1a1f1e</span>
+          <div class="swatch-role">Borders, dividers</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ff6b6b;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Error</span>
+          <span class="swatch-hex">#ff6b6b</span>
+          <div class="swatch-role">Errors, failures</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fbbf24;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">Warning</span>
+          <span class="swatch-hex">#fbbf24</span>
+          <div class="swatch-role">Warnings, degraded</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SECTION 2: TYPOGRAPHY
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">02 — Typography</div>
+
+    <div class="type-scale-item">
+      <div class="type-meta">Display / 64px / 700<br>tracking: -0.02em</div>
+      <div style="font-size:64px;font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:var(--off-white)">The System</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">H1 / 48px / 700<br>tracking: -0.01em</div>
+      <div style="font-size:48px;font-weight:700;letter-spacing:-0.01em;line-height:1.15;color:var(--off-white)">Agent Observability</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">H2 / 36px / 600<br>tracking: -0.005em</div>
+      <div style="font-size:36px;font-weight:600;letter-spacing:-0.005em;line-height:1.2;color:var(--off-white)">Every decision, captured</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">H3 / 24px / 600<br>tracking: 0</div>
+      <div style="font-size:24px;font-weight:600;line-height:1.3;color:var(--off-white)">Structured replay</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">H4 / 18px / 600<br>tracking: 0</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.4;color:var(--off-white)">Trace event schema</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">Body / 16px / 400<br>tracking: 0</div>
+      <div style="font-size:16px;font-weight:400;line-height:1.6;color:var(--off-white);max-width:540px">KAIROS captures every decision an agent makes. You can step through any run, at any point in time, with full context at each node — without rebuilding state from scattered logs.</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">Body Small / 14px / 400<br>tracking: 0</div>
+      <div style="font-size:14px;font-weight:400;line-height:1.5;color:var(--muted);max-width:480px">Each trace event is immutable after capture. The append-only log means you can always reconstruct what happened, even if the agent is no longer running.</div>
+    </div>
+    <div class="type-scale-item">
+      <div class="type-meta">Label / 12px / 500<br>tracking: 0.06em / uppercase</div>
+      <div style="font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)">Trace ID · Status · Duration</div>
+    </div>
+    <div class="type-scale-item" style="border-bottom:none">
+      <div class="type-meta">Mono / JetBrains Mono<br>13px / code / system values</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mint)">trace_id: krs_01jw7f2m9x4q8r3</div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SECTION 3: LOGO VERSIONS
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">03 — Logo Versions</div>
+
+    <div class="logo-grid">
+      <!-- Dark: Full lockup -->
+      <div class="logo-panel dark" style="border:1px solid var(--border);border-radius:6px 0 0 0;">
+        <div class="logo-lockup">
+          <div class="logo-mark-inline">
+            <div class="tri-top-light"></div>
+            <div class="tri-bottom-light"></div>
+          </div>
+          <span class="wordmark-text wordmark-light">KAIROS</span>
+        </div>
+        <span class="caption">Dark — Full lockup</span>
+      </div>
+
+      <!-- Dark: Wordmark only -->
+      <div class="logo-panel dark" style="border:1px solid var(--border);border-left:none;border-radius:0 6px 0 0;">
+        <span class="wordmark-text wordmark-light">KAIROS</span>
+        <span class="caption">Dark — Wordmark only</span>
+      </div>
+
+      <!-- Light: Full lockup -->
+      <div class="logo-panel light" style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 0 6px;">
+        <div class="logo-lockup">
+          <div class="logo-mark-inline">
+            <div class="tri-top-dark"></div>
+            <div class="tri-bottom-dark"></div>
+          </div>
+          <span class="wordmark-text wordmark-dark">KAIROS</span>
+        </div>
+        <span class="caption" style="color:#9ca3af;">Light — Full lockup</span>
+      </div>
+
+      <!-- Light: Wordmark only -->
+      <div class="logo-panel light" style="border:1px solid #e5e7eb;border-left:none;border-top:none;border-radius:0 0 6px 0;">
+        <span class="wordmark-text wordmark-dark">KAIROS</span>
+        <span class="caption" style="color:#9ca3af;">Light — Wordmark only</span>
+      </div>
+    </div>
+
+    <!-- Mark only row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-top:2px;">
+      <div class="logo-panel dark" style="border:1px solid var(--border);border-radius:6px;align-items:center;flex-direction:row;gap:20px;">
+        <div class="logo-mark-inline" style="transform:scale(1.8);margin:12px 0;">
+          <div class="tri-top-light"></div>
+          <div class="tri-bottom-light"></div>
+        </div>
+        <span class="caption" style="margin-left:24px;">Mark — dark</span>
+      </div>
+      <div class="logo-panel light" style="border:1px solid #e5e7eb;border-radius:6px;align-items:center;flex-direction:row;gap:20px;">
+        <div class="logo-mark-inline" style="transform:scale(1.8);margin:12px 0;">
+          <div class="tri-top-dark"></div>
+          <div class="tri-bottom-dark"></div>
+        </div>
+        <span class="caption" style="margin-left:24px;color:#9ca3af;">Mark — light</span>
+      </div>
+      <div class="logo-panel mint-bg" style="border-radius:6px;align-items:center;flex-direction:row;gap:20px;">
+        <div class="logo-mark-inline" style="transform:scale(1.8);margin:12px 0;">
+          <div class="tri-top-black"></div>
+          <div class="tri-bottom-black"></div>
+        </div>
+        <span class="caption" style="margin-left:24px;">Mark — on mint</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SECTION 4: UI COMPONENTS
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">04 — UI Components</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+      <!-- Buttons -->
+      <div class="component-section">
+        <div class="component-label">Buttons</div>
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn btn-primary">Start trace</button>
+          <button class="btn btn-secondary">View docs</button>
+          <button class="btn btn-danger">Terminate run</button>
+        </div>
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn btn-primary btn-sm">Deploy</button>
+          <button class="btn btn-secondary btn-sm">Cancel</button>
+          <button class="btn btn-ghost">Skip for now</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" disabled>Processing...</button>
+          <button class="btn btn-secondary" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="component-section">
+        <div class="component-label">Badges &amp; Status</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+          <span class="badge badge-mint">Running</span>
+          <span class="badge badge-mint">Success</span>
+          <span class="badge badge-error">Failed</span>
+          <span class="badge badge-warning">Degraded</span>
+          <span class="badge badge-muted">Idle</span>
+          <span class="badge badge-muted">v0.4.1</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="badge badge-mint">agent.run</span>
+          <span class="badge badge-error">loop.detected</span>
+          <span class="badge badge-warning">rate.limited</span>
+          <span class="badge badge-muted">tool.call</span>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="component-section">
+        <div class="component-label">Card</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div class="card-title">research-agent-04</div>
+            <span class="badge badge-error">Failed</span>
+          </div>
+          <div class="card-meta">krs_01jw7f2m9x4q8r3 · started 14m ago</div>
+          <div class="card-body">Agent entered a tool-call loop after receiving a 429 from the search API. 847 identical calls were captured before the circuit breaker triggered.</div>
+          <div class="card-footer">
+            <div style="display:flex;gap:20px;">
+              <div class="card-stat">Steps <span>847</span></div>
+              <div class="card-stat">Duration <span>4m 12s</span></div>
+              <div class="card-stat">Tokens <span>284,392</span></div>
+            </div>
+            <button class="btn btn-secondary btn-sm">Replay</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Inputs -->
+      <div class="component-section">
+        <div class="component-label">Form Inputs</div>
+        <div class="form-group">
+          <label class="form-label">API Key</label>
+          <input class="form-input" type="text" placeholder="krs_live_..." value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Webhook URL</label>
+          <input class="form-input" type="text" value="https://hooks.yourapp.com/kairos">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Agent ID</label>
+          <input class="form-input error" type="text" value="invalid-agent-id">
+          <div class="form-error-msg">ERR_AGENT_NOT_FOUND: no agent with this ID exists in this project</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Code Block (full width) -->
+    <div style="margin-top:24px;">
+      <div class="component-section">
+        <div class="component-label">Code Block</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">python</span>
+            <span class="code-copy">copy</span>
+          </div>
+          <div class="code-body">
+<span class="tok-keyword">import</span> <span class="tok-default">kairos</span>
+
+<span class="tok-comment"># Initialize the tracer — attach to any agent framework</span>
+<span class="tok-default">tracer</span> <span class="tok-default">=</span> <span class="tok-fn">kairos.Tracer</span><span class="tok-default">(</span>
+    <span class="tok-default">api_key</span><span class="tok-default">=</span><span class="tok-string">"krs_live_..."</span><span class="tok-default">,</span>
+    <span class="tok-default">project</span><span class="tok-default">=</span><span class="tok-string">"research-agent"</span><span class="tok-default">,</span>
+<span class="tok-default">)</span>
+
+<span class="tok-comment"># Wrap your agent run — zero instrumentation required</span>
+<span class="tok-keyword">with</span> <span class="tok-default">tracer</span><span class="tok-default">.</span><span class="tok-fn">trace</span><span class="tok-default">(</span><span class="tok-default">run_id</span><span class="tok-default">=</span><span class="tok-fn">generate_run_id</span><span class="tok-default">())</span> <span class="tok-keyword">as</span> <span class="tok-default">trace</span><span class="tok-default">:</span>
+    <span class="tok-default">result</span> <span class="tok-default">=</span> <span class="tok-fn">run_agent</span><span class="tok-default">(</span><span class="tok-default">task</span><span class="tok-default">)</span>
+
+<span class="tok-comment"># Every decision captured — query from the dashboard or API</span>
+<span class="tok-default">replay</span> <span class="tok-default">=</span> <span class="tok-default">tracer</span><span class="tok-default">.</span><span class="tok-fn">get_replay</span><span class="tok-default">(</span><span class="tok-default">trace</span><span class="tok-default">.</span><span class="tok-default">id</span><span class="tok-default">)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trace Timeline -->
+    <div style="margin-top:24px;">
+      <div class="component-section">
+        <div class="component-label">Trace Timeline</div>
+        <div class="trace-line">
+          <div class="trace-event">
+            <div class="trace-ts">14:02:31.004</div>
+            <div class="trace-content">
+              <div class="trace-name">agent.start</div>
+              <div class="trace-detail">run_id: krs_01jw7f2m9x4q8r3 · model: claude-sonnet-4-6</div>
+            </div>
+          </div>
+          <div class="trace-event">
+            <div class="trace-ts">14:02:31.892</div>
+            <div class="trace-content">
+              <div class="trace-name">tool.call → web_search</div>
+              <div class="trace-detail">query: "Q1 2026 AI infrastructure market size"</div>
+            </div>
+          </div>
+          <div class="trace-event">
+            <div class="trace-ts">14:02:33.112</div>
+            <div class="trace-content">
+              <div class="trace-name">tool.result</div>
+              <div class="trace-detail">status: 429 · retry_after: 60s</div>
+            </div>
+          </div>
+          <div class="trace-event error">
+            <div class="trace-ts">14:06:52.004</div>
+            <div class="trace-content">
+              <div class="trace-name">loop.detected</div>
+              <div class="trace-detail">identical tool.call observed 847 times · circuit breaker triggered</div>
+            </div>
+          </div>
+          <div class="trace-event error">
+            <div class="trace-ts">14:06:52.006</div>
+            <div class="trace-content">
+              <div class="trace-name">agent.terminate</div>
+              <div class="trace-detail">reason: LOOP_GUARD · exit_code: 1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div style="margin-top:24px;">
+      <div class="component-section">
+        <div class="component-label">Data Table</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Run ID</th>
+              <th>Agent</th>
+              <th>Status</th>
+              <th>Steps</th>
+              <th>Duration</th>
+              <th>Started</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">krs_01jw7f2m9</td>
+              <td>research-agent-04</td>
+              <td><span class="badge badge-error">Failed</span></td>
+              <td class="mono">847</td>
+              <td class="mono">4m 12s</td>
+              <td class="mono">14:02:31</td>
+            </tr>
+            <tr>
+              <td class="mono">krs_01jw7ezp3</td>
+              <td>summarizer-01</td>
+              <td><span class="badge badge-mint">Success</span></td>
+              <td class="mono">23</td>
+              <td class="mono">18s</td>
+              <td class="mono">13:58:04</td>
+            </tr>
+            <tr>
+              <td class="mono">krs_01jw7ey1x</td>
+              <td>outreach-agent</td>
+              <td><span class="badge badge-warning">Degraded</span></td>
+              <td class="mono">142</td>
+              <td class="mono">2m 07s</td>
+              <td class="mono">13:51:22</td>
+            </tr>
+            <tr>
+              <td class="mono">krs_01jw7ext4</td>
+              <td>data-fetch-02</td>
+              <td><span class="badge badge-mint">Running</span></td>
+              <td class="mono">38</td>
+              <td class="mono">ongoing</td>
+              <td class="mono">13:49:00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================================================================
+       SECTION 5: SOCIAL POST TEMPLATE
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">05 — Social Media Template (1080×1080)</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+      <div class="social-preview">
+        <div class="social-top">
+          <div class="social-mark">
+            <div class="s-tri-top"></div>
+            <div class="s-tri-bottom"></div>
+          </div>
+          <div>
+            <div class="social-brand">KAIROS</div>
+            <div class="social-handle">@withkairos</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="social-headline">
+            847 identical calls.<br>
+            <span class="accent">One missed guard.</span>
+          </div>
+          <div class="social-subtext">
+            An agent hit a 429 and retried the same call for 4 minutes before we caught it. Loop detection now ships in 0.4.
+          </div>
+          <div class="social-code">
+<span style="color:var(--muted)">## kairos trace — loop.detected</span>
+tool.call → web_search  <span style="color:var(--error)">×847</span>
+circuit_breaker:         <span style="color:var(--mint)">triggered</span>
+exit_code:               <span style="color:var(--off-white)">1</span>
+          </div>
+        </div>
+
+        <div class="social-footer">
+          <span class="social-url">withkairos.dev</span>
+          <span class="social-date">2026-05-30</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="component-section" style="padding:16px;">
+          <div class="component-label" style="margin-bottom:8px;">Template guidelines</div>
+          <ul style="font-size:13px;color:var(--muted);line-height:1.8;list-style:none;padding:0;">
+            <li>→ Always includes the KAIROS mark + handle</li>
+            <li>→ Headline: 2-3 lines, max 40 chars/line</li>
+            <li>→ Use accent color for the key metric or insight</li>
+            <li>→ Code block for any data or trace output</li>
+            <li>→ Bottom: URL left, date right</li>
+            <li>→ No hashtags in the image</li>
+            <li>→ Max 2 colors used in any single post</li>
+          </ul>
+        </div>
+        <div class="component-section" style="padding:16px;">
+          <div class="component-label" style="margin-bottom:8px;">Export specs</div>
+          <ul style="font-size:13px;color:var(--muted);line-height:1.8;list-style:none;padding:0;font-family:'JetBrains Mono',monospace;">
+            <li>size:   1080×1080px</li>
+            <li>format: PNG (lossless)</li>
+            <li>bg:     #050606</li>
+            <li>dpi:    144 (2x)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SECTION 6: EMAIL SIGNATURE
+       ================================================================ -->
+  <div class="section">
+    <div class="section-label">06 — Email Signature</div>
+    <div style="max-width:480px;">
+      <div class="email-sig">
+        <div class="sig-name">Kylen Alamvelil</div>
+        <div class="sig-role">Founder &amp; CEO</div>
+        <hr class="sig-divider">
+        <div class="sig-company">
+          <div class="sig-mark">
+            <div class="sig-tri-top"></div>
+            <div class="sig-tri-bottom"></div>
+          </div>
+          <span class="sig-company-name">KAIROS</span>
+        </div>
+        <div class="sig-tagline" style="margin-bottom:8px;">The system of record for autonomous execution</div>
+        <div class="sig-links">
+          <a href="https://withkairos.dev">withkairos.dev</a>
+          &nbsp;·&nbsp;
+          <a href="mailto:kylen@withkairos.dev">kylen@withkairos.dev</a>
+          &nbsp;·&nbsp;
+          <a href="https://x.com/withkairos">@withkairos</a>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:4px;">
+        <div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:1.8;">
+          Copy the signature above and paste into your email client.<br>
+          Gmail: Settings → Signature → paste as HTML<br>
+          Outlook: Options → Compose → Signatures → paste
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
