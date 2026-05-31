@@ -12,7 +12,8 @@
     "dev:web": "pnpm --filter kairos-web dev",
     "dev:api": "cd kairos-core && uvicorn app.main:app --reload",
     "build:web": "pnpm --filter kairos-web build",
-    "build:sdk": "pnpm --filter @kairos/sdk build"
+    "build:sdk": "pnpm --filter @kairos/sdk build",
+    "vercel-build": "cd kairos-web && npm install && npm run build"
   },
   "packageManager": "pnpm@9.0.0"
 }
